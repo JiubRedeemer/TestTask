@@ -1,9 +1,7 @@
 package com.haulmont.testtask.hibernate;
 
-import com.haulmont.testtask.entities.Bank;
-import com.haulmont.testtask.entities.Client;
+import com.haulmont.testtask.entities.*;
 
-import com.haulmont.testtask.entities.Credit;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -15,6 +13,8 @@ public class HibernateUtil {
                     addAnnotatedClass(Client.class).
                     addAnnotatedClass(Credit.class).
                     addAnnotatedClass(Bank.class).
+                    addAnnotatedClass(Payments.class).
+                    addAnnotatedClass(ClientCredit.class).
                     buildSessionFactory();
         } catch (Throwable ex){
             System.err.println("Initial SessionFactory creation failed." + ex);

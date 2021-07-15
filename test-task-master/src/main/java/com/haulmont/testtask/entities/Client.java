@@ -31,6 +31,9 @@ public class Client {
     @JoinColumn(name = "idBank")
         private Bank bank;
 
+    @OneToOne(mappedBy = "Client")
+    private ClientCredit clientCredit;
+
     public Client() {
     }
 
@@ -41,6 +44,27 @@ public class Client {
         this.phone = phone;
         this.email = email;
         this.passport = passport;
+    }
+
+    public Client(String name, String surname, String patronymic, String phone, String email, String passport, Bank bank) {
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.phone = phone;
+        this.email = email;
+        this.passport = passport;
+        this.bank = bank;
+    }
+
+    public Client(String name, String surname, String patronymic, String phone, String email, String passport, Bank bank, ClientCredit clientCredit) {
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.phone = phone;
+        this.email = email;
+        this.passport = passport;
+        this.bank = bank;
+        this.clientCredit = clientCredit;
     }
 
     public String getIdClient() {
@@ -107,6 +131,14 @@ public class Client {
         this.bank = bank;
     }
 
+    public ClientCredit getClientCredit() {
+        return clientCredit;
+    }
+
+    public void setClientCredit(ClientCredit credit) {
+        this.clientCredit = credit;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -118,6 +150,7 @@ public class Client {
                 ", email='" + email + '\'' +
                 ", passport='" + passport + '\'' +
                 ", bank=" + bank +
+                ", clientCredit=" + clientCredit +
                 '}';
     }
 }

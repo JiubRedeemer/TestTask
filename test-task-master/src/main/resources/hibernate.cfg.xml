@@ -27,6 +27,8 @@
         <mapping class="com.haulmont.testtask.entities.Client" />
         <mapping class="com.haulmont.testtask.entities.Bank" />
         <mapping class="com.haulmont.testtask.entities.Credit" />
+        <mapping class="com.haulmont.testtask.entities.ClientCredit" />
+        <mapping class="com.haulmont.testtask.entities.Payments" />
 
     </session-factory>
 </hibernate-configuration>

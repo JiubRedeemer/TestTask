@@ -25,6 +25,9 @@ public class Credit {
     @JoinColumn(name = "idBank")
     private Bank bank;
 
+    @OneToOne(mappedBy = "Credit")
+    private ClientCredit clientCredit;
+
     public Credit() {
     }
 
@@ -34,54 +37,18 @@ public class Credit {
         this.percent = percent;
     }
 
-    public String getIdCredit() {
-        return idCredit;
-    }
-
-    public void setIdCredit(String idCredit) {
-        this.idCredit = idCredit;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Credit(String name, long limit, float percent, Bank bank) {
         this.name = name;
-    }
-
-    public long getLimit() {
-        return limit;
-    }
-
-    public void setLimit(long limit) {
         this.limit = limit;
-    }
-
-    public float getPercent() {
-        return percent;
-    }
-
-    public void setPercent(float percent) {
         this.percent = percent;
-    }
-
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
         this.bank = bank;
     }
 
-    @Override
-    public String toString() {
-        return "Credit{" +
-                "idCredit='" + idCredit + '\'' +
-                ", name='" + name + '\'' +
-                ", limit=" + limit +
-                ", percent=" + percent +
-                ", bank=" + bank +
-                '}';
+    public Credit(String name, long limit, float percent, Bank bank, ClientCredit clientCredit) {
+        this.name = name;
+        this.limit = limit;
+        this.percent = percent;
+        this.bank = bank;
+        this.clientCredit = clientCredit;
     }
 }

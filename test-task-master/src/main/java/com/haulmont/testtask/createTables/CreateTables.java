@@ -15,7 +15,7 @@ public class CreateTables {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
             con = DriverManager.getConnection("jdbc:hsqldb:file:database", "sa", "");
             stmt = con.createStatement();
-            result = stmt.executeUpdate("DROP TABLE CLIENT;DROP TABLE Bank ");
+           // result = stmt.executeUpdate("DROP TABLE CLIENT;DROP TABLE CREDIT;DROP TABLE Bank; DROP TABLE Payments");
 //
             result = stmt.executeUpdate("    CREATE TABLE Bank (\n" +
                     "        idBank VARCHAR(255) NOT NULL,\n" +
@@ -31,8 +31,8 @@ public class CreateTables {
                     "        phone VARCHAR(255) NOT NULL,\n" +
                     "        email VARCHAR(255) NOT NULL,\n" +
                     "        passport VARCHAR(255) NOT NULL,\n" +
-                    "        CONSTRAINT pk_idClient PRIMARY KEY (idClient),\n" +
-                    "        CONSTRAINT fk_idBank FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
+                    "        PRIMARY KEY (idClient),\n" +
+                    "        FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
                     "        );");
             result = stmt.executeUpdate("CREATE TABLE Credit (\n" +
                     "        idCredit VARCHAR(255) NOT NULL,\n" +
@@ -40,8 +40,27 @@ public class CreateTables {
                     "        name VARCHAR(255) NOT NULL,\n" +
                     "        limit BIGINT NOT NULL,\n" +
                     "        percent FLOAT NOT NULL,\n" +
-                    "        CONSTRAINT pk_idCredit PRIMARY KEY (idCredit),\n" +
-                    "        CONSTRAINT fk_idCreditBank FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
+                    "        PRIMARY KEY (idCredit),\n" +
+                    "        FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
+                    "        );");
+            result = stmt.executeUpdate("    CREATE TABLE Payments (\n" +
+                    "        idClientCredit VARCHAR(255) NOT NULL,\n" +
+                    "        date VARCHAR(255) NOT NULL,\n" +
+                    "        sumPayment BIGINT NOT NULL,\n" +
+                    "        sumPaymentBody BIGINT NOT NULL,\n" +
+                    "        sumPaymentPercents BIGINT NOT NULL,\n" +
+                    "        balanceOwed BIGINT NOT NULL,\n" +
+                    "        PRIMARY KEY (idClientCredit)" +
+                    "        );");
+            result = stmt.executeUpdate("    CREATE TABLE ClientCredit (\n" +
+                    "        idClientCredit VARCHAR(255) NOT NULL,\n" +
+                    "        idCredit VARCHAR(255) NOT NULL,\n" +
+                    "        idClient VARCHAR(255) NOT NULL,\n" +
+                    "        PRIMARY KEY (idClientCredit),\n" +
+                    "         FOREIGN KEY(idCredit) REFERENCES Credit(idCredit) ON DELETE CASCADE,\n" +
+                    "         FOREIGN KEY(idClient) REFERENCES Client(idClient) ON DELETE CASCADE,\n" +
+                    "         FOREIGN KEY(idClientCredit) REFERENCES Payments(idClientCredit) ON DELETE CASCADE,\n" +
+                    "\n" +
                     "        );");
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -51,70 +70,69 @@ public class CreateTables {
 }
 
 
-//    CREATE TABLE 'Bank' (
-//        'id' VARCHAR(255) NOT NULL,
-//        'name' VARCHAR(255) NOT NULL,
-//        PRIMARY KEY ('id')
+//    CREATE TABLE Bank (
+//        id VARCHAR(255) NOT NULL,
+//        name VARCHAR(255) NOT NULL,
+//        PRIMARY KEY (id)
 //        );
 
-//    CREATE TABLE 'Client' (
-//        'id' VARCHAR(255) NOT NULL,
-//        'name' VARCHAR(255) NOT NULL,
-//        'surname' VARCHAR(255) NOT NULL,
-//        'patronymic' VARCHAR(255) NOT NULL,
-//        'phone' VARCHAR(255) NOT NULL,
-//        'email' VARCHAR(255) NOT NULL,
-//        'passport' VARCHAR(255) NOT NULL,
-//        'idBank' VARCHAR(255) NOT NULL,
-//        PRIMARY KEY ('id')
+//    CREATE TABLE Client (
+//        id VARCHAR(255) NOT NULL,
+//        name VARCHAR(255) NOT NULL,
+//        surname VARCHAR(255) NOT NULL,
+//        patronymic VARCHAR(255) NOT NULL,
+//        phone VARCHAR(255) NOT NULL,
+//        email VARCHAR(255) NOT NULL,
+//        passport VARCHAR(255) NOT NULL,
+//        idBank VARCHAR(255) NOT NULL,
+//        PRIMARY KEY (id)
 //
 //        );
 
 
-/*   CREATE TABLE 'ClientInBank' (
-        'idBank' VARCHAR(255) NOT NULL,
-        'idClient' VARCHAR(255) NOT NULL,
-        PRIMARY KEY ('idBank'),
-         FOREIGN KEY('idClient') REFERENCES Client('idClient') ON DELETE CASCADE
+/*   CREATE TABLE ClientInBank (
+        idBank VARCHAR(255) NOT NULL,
+        idClient VARCHAR(255) NOT NULL,
+        PRIMARY KEY (idBank),
+         FOREIGN KEY(idClient) REFERENCES Client(idClient) ON DELETE CASCADE
         );*/
 
-//    CREATE TABLE 'Credit' (
-//        'id' VARCHAR(255) NOT NULL,
-//        'name' VARCHAR(255) NOT NULL,
-//        'limit' BIGINT NOT NULL,
-//        'percent' FLOAT NOT NULL,
-//        PRIMARY KEY ('id'),
-//        'idBank' VARCHAR(255) NOT NULL
+//    CREATE TABLE Credit (
+//        id VARCHAR(255) NOT NULL,
+//        name VARCHAR(255) NOT NULL,
+//        limit BIGINT NOT NULL,
+//        percent FLOAT NOT NULL,
+//        PRIMARY KEY (id),
+//        idBank VARCHAR(255) NOT NULL
 //        );
 
-/*    CREATE TABLE 'CreditsInBank' (
-       'idBank' VARCHAR(255) NOT NULL,
-        'idCredit' VARCHAR(255) NOT NULL,
-         FOREIGN KEY('idCredit') REFERENCES Credit('idCredit') ON DELETE CASCADE
-         FOREIGN KEY('idBank') REFERENCES Bank('idBank') ON DELETE CASCADE
+/*    CREATE TABLE CreditsInBank (
+       idBank VARCHAR(255) NOT NULL,
+        idCredit VARCHAR(255) NOT NULL,
+         FOREIGN KEY(idCredit) REFERENCES Credit(idCredit) ON DELETE CASCADE
+         FOREIGN KEY(idBank) REFERENCES Bank(idBank) ON DELETE CASCADE
 
         );*/
 
-//    CREATE TABLE 'CreditInfo' (
-//        'id' VARCHAR(255) NOT NULL,
-//        'idCredit' VARCHAR(255) NOT NULL,
-//        'idClient' VARCHAR(255) NOT NULL,
-//        'idPayments' VARCHAR(255) NOT NULL,
-//        PRIMARY KEY ('id'),
-//         FOREIGN KEY('idCredit') REFERENCES Credit('idCredit') ON DELETE CASCADE,
-//         FOREIGN KEY('idClient') REFERENCES Client('idClient) ON DELETE CASCADE,
-//         FOREIGN KEY('idPayments') REFERENCES Payments('idPayments') ON DELETE CASCADE
-
+//    CREATE TABLE ClientCredit (
+//        idClientCredit VARCHAR(255) NOT NULL,
+//        idCredit VARCHAR(255) NOT NULL,
+//        idClient VARCHAR(255) NOT NULL,
+//        PRIMARY KEY (id),
+//         FOREIGN KEY(idCredit) REFERENCES Credit(idCredit) ON DELETE CASCADE,
+//         FOREIGN KEY(idClient) REFERENCES Client(idClient) ON DELETE CASCADE,
+//         FOREIGN KEY(idClientCredit) REFERENCES Payments(idClientCredit) ON DELETE CASCADE,
+//
 //        );
 
-//    CREATE TABLE 'Payments' (
-//        'id' VARCHAR(255) NOT NULL,
-//        'date' VARCHAR(255) NOT NULL,
-//        'sum' BIGINT NOT NULL,
-//        'sumPayBody' BIGINT NOT NULL,
-//        'sumPayPercents' BIGINT NOT NULL,
-//        'balanceOwed' BIGINT NOT NULL,
-//        PRIMARY KEY ('id')
+//    CREATE TABLE Payments (
+//        idClientCredit VARCHAR(255) NOT NULL,
+//        date VARCHAR(255) NOT NULL,
+//        sum BIGINT NOT NULL,
+//        sumPayBody BIGINT NOT NULL,
+//        sumPayPercents BIGINT NOT NULL,
+//        balanceOwed BIGINT NOT NULL,
+//
 //        );
 
 //result = stmt.executeUpdate("CREATE TABLE client(\n" +

@@ -25,7 +25,7 @@ public class Credit {
     @JoinColumn(name = "idBank")
     private Bank bank;
 
-    @OneToOne(mappedBy = "Credit")
+    @OneToOne(mappedBy = "credit")
     private ClientCredit clientCredit;
 
     public Credit() {

@@ -20,7 +20,7 @@ public class ClientCredit {
     @JoinColumn(name = "idCredit")
     private Credit credit;
 
-    @OneToOne(mappedBy = "ClientCredit", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "clientCredit", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Payments payments;
 

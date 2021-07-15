@@ -1,7 +1,7 @@
 package com.haulmont.testtask;
 
-import com.haulmont.testtask.dao.BankDB;
-import com.haulmont.testtask.dao.ClientDB;
+import com.haulmont.testtask.createTables.CreateTables;
+import com.haulmont.testtask.dao.*;
 import com.haulmont.testtask.entities.*;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
@@ -10,15 +10,14 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.sql.Date;
-import java.sql.SQLException;
+import java.sql.*;
 
 @Theme(ValoTheme.THEME_NAME)
 public class MainUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        //CreateTables.create();
+        CreateTables.create();
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
         layout.setMargin(true);
@@ -37,45 +36,57 @@ public class MainUI extends UI {
         Payments paymentsV = new Payments(new Date(System.currentTimeMillis()), 5000, 1200, 3000, 800);
         Payments paymentsD = new Payments(new Date(System.currentTimeMillis()), 6000, 2200, 3000, 800);
 
-        ClientCredit clientCreditV = new ClientCredit(Vlad, fast, paymentsV);
-        ClientCredit clientCreditD = new ClientCredit(Dasha, waited, paymentsD);
+        ClientCredit clientCreditV = new ClientCredit(Vlad, fast);
+        ClientCredit clientCreditD = new ClientCredit(Dasha, waited);
+        clientCreditV.setPayments(paymentsV);
+        clientCreditD.setPayments(paymentsD);
+        paymentsV.setClientCredit(clientCreditV);
+        paymentsD.setClientCredit(clientCreditD);
 
         layout.addComponent(new Label("asd"));
 
         ClientDB clientDB = new ClientDB();
+        CreditDB creditDB = new CreditDB();
         BankDB bankDB = new BankDB();
+        PaymentsDB paymentsDB = new PaymentsDB();
+        ClientCreditDB clientCreditDB = new ClientCreditDB();
         try {
             clientDB.addClient(Vlad);
             clientDB.addClient(Dasha);
+            creditDB.addCredit(fast);
+            creditDB.addCredit(waited);
             bankDB.addBank(tinkoff);
             clientDB.updateClient(Vlad);
             clientDB.updateClient(Dasha);
-
+            paymentsDB.addPayments(paymentsV);
+            paymentsDB.addPayments(paymentsD);
+            clientCreditDB.addClientCredit(clientCreditV);
+            clientCreditDB.addClientCredit(clientCreditD);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
 
-//        Connection con;
-//        try {
-//            con = DriverManager.getConnection("jdbc:hsqldb:file:"
-//                            + "database",    // filenames
-//                    "sa",                     // username
-//                    "");
-//            Statement stmt = con.createStatement();
-//            ResultSet rs;
-//            rs = stmt.executeQuery("SELECT * FROM BANK");
-//            while (rs.next()) {
-//                String a = rs.getString(1);
-//                String b = rs.getString(2);
-//                String c = rs.getString(3);
-//
-//                System.out.printf("%s %s %s",a, b, c);
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
+        Connection con;
+        try {
+            con = DriverManager.getConnection("jdbc:hsqldb:file:"
+                            + "database",    // filenames
+                    "sa",                     // username
+                  "");
+           Statement stmt = con.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("SELECT * FROM CLIENTCREDIT");
+            while (rs.next()) {
+                String a = rs.getString(1);
+                String b = rs.getString(2);
+                String c = rs.getString(3);
+
+                System.out.printf("%s %s %s \n",a, b, c);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
 
         setContent(layout);

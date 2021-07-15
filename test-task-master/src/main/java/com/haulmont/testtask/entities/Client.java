@@ -31,7 +31,7 @@ public class Client {
     @JoinColumn(name = "idBank")
         private Bank bank;
 
-    @OneToOne(mappedBy = "Client")
+    @OneToOne(mappedBy = "client")
     private ClientCredit clientCredit;
 
     public Client() {

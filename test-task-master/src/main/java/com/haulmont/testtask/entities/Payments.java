@@ -9,8 +9,6 @@ import java.sql.Date;
 public class Payments {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name ="uuid", strategy = "uuid")
     @Column(name = "idClientCredit")
     private String idClientCredit;
     @Column(name = "date")

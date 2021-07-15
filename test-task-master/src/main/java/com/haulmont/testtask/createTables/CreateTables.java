@@ -15,7 +15,7 @@ public class CreateTables {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
             con = DriverManager.getConnection("jdbc:hsqldb:file:database", "sa", "");
             stmt = con.createStatement();
-           // result = stmt.executeUpdate("DROP TABLE CLIENT;DROP TABLE CREDIT;DROP TABLE Bank; DROP TABLE Payments");
+            result = stmt.executeUpdate("DROP TABLE Payments; DROP TABLE CLIENTCREDIT;  DROP TABLE CLIENT;DROP TABLE CREDIT;DROP TABLE Bank;  ");
 //
             result = stmt.executeUpdate("    CREATE TABLE Bank (\n" +
                     "        idBank VARCHAR(255) NOT NULL,\n" +

@@ -1,6 +1,8 @@
 package com.haulmont.testtask.dao;
 
+import com.haulmont.testtask.entities.Client;
 import com.haulmont.testtask.entities.ClientCredit;
+import com.haulmont.testtask.entities.Credit;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,4 +13,5 @@ public interface ClientCreditDAO {
     public ClientCredit getClientCreditById(String id) throws SQLException;
     public List getAllClientCredit() throws SQLException;
     public void deleteClientCredit(ClientCredit clientCredit) throws SQLException;
+
 }

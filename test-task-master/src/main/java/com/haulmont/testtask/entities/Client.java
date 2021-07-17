@@ -10,10 +10,12 @@ public class Client {
 
     @Id
     @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name ="uuid", strategy = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "idClient")
     private String idClient;
 
+    @Column(name = "FIO")
+    private String FIO;
     @Column(name = "name")
     private String name;
     @Column(name = "surname")
@@ -29,7 +31,7 @@ public class Client {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "idBank")
-        private Bank bank;
+    private Bank bank;
 
     @OneToOne(mappedBy = "client")
     private ClientCredit clientCredit;
@@ -44,6 +46,7 @@ public class Client {
         this.phone = phone;
         this.email = email;
         this.passport = passport;
+        this.FIO = surname + " " + name + " " + patronymic;
     }
 
     public Client(String name, String surname, String patronymic, String phone, String email, String passport, Bank bank) {
@@ -54,6 +57,8 @@ public class Client {
         this.email = email;
         this.passport = passport;
         this.bank = bank;
+        this.FIO = surname + " " + name + " " + patronymic;
+
     }
 
     public Client(String name, String surname, String patronymic, String phone, String email, String passport, Bank bank, ClientCredit clientCredit) {
@@ -65,6 +70,8 @@ public class Client {
         this.passport = passport;
         this.bank = bank;
         this.clientCredit = clientCredit;
+        this.FIO = surname + " " + name + " " + patronymic;
+
     }
 
     public String getIdClient() {
@@ -137,6 +144,14 @@ public class Client {
 
     public void setClientCredit(ClientCredit credit) {
         this.clientCredit = credit;
+    }
+
+    public String getFIO() {
+        return FIO;
+    }
+
+    public void setFIO(String FIO) {
+        this.FIO = FIO;
     }
 
     @Override

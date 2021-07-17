@@ -51,4 +51,52 @@ public class Credit {
         this.bank = bank;
         this.clientCredit = clientCredit;
     }
+
+    public String getIdCredit() {
+        return idCredit;
+    }
+
+    public void setIdCredit(String idCredit) {
+        this.idCredit = idCredit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getLimit() {
+        return limit;
+    }
+
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
+
+    public float getPercent() {
+        return percent;
+    }
+
+    public void setPercent(float percent) {
+        this.percent = percent;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
+
+    public ClientCredit getClientCredit() {
+        return clientCredit;
+    }
+
+    public void setClientCredit(ClientCredit clientCredit) {
+        this.clientCredit = clientCredit;
+    }
 }

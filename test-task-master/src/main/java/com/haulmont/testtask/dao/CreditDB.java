@@ -67,6 +67,10 @@ public class CreditDB implements CreditDAO{
             credits = session.createQuery("SELECT credit FROM Credit credit").list();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
         return credits;
     }

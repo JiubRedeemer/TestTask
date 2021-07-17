@@ -66,6 +66,10 @@ public class ClientDB implements ClientDAO {
             clients = session.createQuery("SELECT client FROM Client client").list();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
         return clients;
     }

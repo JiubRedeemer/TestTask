@@ -2,9 +2,14 @@ package com.haulmont.testtask.dao;
 
 import com.haulmont.testtask.entities.Client;
 import com.haulmont.testtask.entities.ClientCredit;
+import com.haulmont.testtask.entities.Credit;
 import com.haulmont.testtask.hibernate.HibernateUtil;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +90,8 @@ public class ClientCreditDB implements ClientCreditDAO{
         } finally {
             if (session != null && session.isOpen()) session.close();
         }
-
     }
+
+
+
 }

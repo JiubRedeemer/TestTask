@@ -15,14 +15,15 @@ public class CreateTables {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
             con = DriverManager.getConnection("jdbc:hsqldb:file:database", "sa", "");
             stmt = con.createStatement();
-            result = stmt.executeUpdate("DROP TABLE Payments; DROP TABLE CLIENTCREDIT;  DROP TABLE CLIENT;DROP TABLE CREDIT;DROP TABLE Bank;  ");
+            // result = stmt.executeUpdate("DROP TABLE Payments; DROP TABLE CLIENTCREDIT; DROP TABLE CLIENT;DROP TABLE CREDIT;  DROP TABLE Bank;   ");
 //
             result = stmt.executeUpdate("    CREATE TABLE Bank (\n" +
                     "        idBank VARCHAR(255) NOT NULL,\n" +
                     "        name VARCHAR(255) NOT NULL,\n" +
-                    "        CONSTRAINT idBank PRIMARY KEY (idBank)\n" +
+                    "        PRIMARY KEY (idBank)\n" +
                     "        );");
             result = stmt.executeUpdate("CREATE TABLE Client (\n" +
+                    "fio VARCHAR(255) NOT NULL," +
                     "        idClient VARCHAR(255) NOT NULL," +
                     "        idBank VARCHAR(255),\n" +
                     "        name VARCHAR(255) NOT NULL,\n" +
@@ -31,18 +32,14 @@ public class CreateTables {
                     "        phone VARCHAR(255) NOT NULL,\n" +
                     "        email VARCHAR(255) NOT NULL,\n" +
                     "        passport VARCHAR(255) NOT NULL,\n" +
-                    "        PRIMARY KEY (idClient),\n" +
-                    "        FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
-                    "        );");
+                    "        PRIMARY KEY (idClient));");
             result = stmt.executeUpdate("CREATE TABLE Credit (\n" +
                     "        idCredit VARCHAR(255) NOT NULL,\n" +
                     "        idBank VARCHAR(255),        " +
                     "        name VARCHAR(255) NOT NULL,\n" +
                     "        limit BIGINT NOT NULL,\n" +
                     "        percent FLOAT NOT NULL,\n" +
-                    "        PRIMARY KEY (idCredit),\n" +
-                    "        FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
-                    "        );");
+                    "        PRIMARY KEY (idCredit));");
             result = stmt.executeUpdate("    CREATE TABLE Payments (\n" +
                     "        idClientCredit VARCHAR(255) NOT NULL,\n" +
                     "        date VARCHAR(255) NOT NULL,\n" +
@@ -53,15 +50,14 @@ public class CreateTables {
                     "        PRIMARY KEY (idClientCredit)" +
                     "        );");
             result = stmt.executeUpdate("    CREATE TABLE ClientCredit (\n" +
+                    "clientFullName VARCHAR(255) NOT NULL," +
+                    "creditName VARCHAR(255) NOT NULL," +
+                    "creditSum VARCHAR(255) NOT NULL," +
+                    "time BIGINT NOT NULL," +
                     "        idClientCredit VARCHAR(255) NOT NULL,\n" +
                     "        idCredit VARCHAR(255) NOT NULL,\n" +
                     "        idClient VARCHAR(255) NOT NULL,\n" +
-                    "        PRIMARY KEY (idClientCredit),\n" +
-                    "         FOREIGN KEY(idCredit) REFERENCES Credit(idCredit) ON DELETE CASCADE,\n" +
-                    "         FOREIGN KEY(idClient) REFERENCES Client(idClient) ON DELETE CASCADE,\n" +
-                    "         FOREIGN KEY(idClientCredit) REFERENCES Payments(idClientCredit) ON DELETE CASCADE,\n" +
-                    "\n" +
-                    "        );");
+                    "        PRIMARY KEY (idClientCredit));");
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
@@ -144,3 +140,52 @@ public class CreateTables {
 //        "    email VARCHAR(255),\n" +
 //        "    pasport VARCHAR(255)\n" +
 //        "    )");
+
+
+//result = stmt.executeUpdate("DROP TABLE Payments; DROP TABLE CLIENTCREDIT; DROP TABLE CLIENT;DROP TABLE CREDIT;  DROP TABLE Bank;   ");
+////
+//        result = stmt.executeUpdate("    CREATE TABLE Bank (\n" +
+//        "        idBank VARCHAR(255) NOT NULL,\n" +
+//        "        name VARCHAR(255) NOT NULL,\n" +
+//        "        CONSTRAINT idBank PRIMARY KEY (idBank)\n" +
+//        "        );");
+//        result = stmt.executeUpdate("CREATE TABLE Client (\n" +
+//        "        idClient VARCHAR(255) NOT NULL," +
+//        "        idBank VARCHAR(255),\n" +
+//        "        name VARCHAR(255) NOT NULL,\n" +
+//        "        surname VARCHAR(255) NOT NULL,\n" +
+//        "        patronymic VARCHAR(255) NOT NULL,\n" +
+//        "        phone VARCHAR(255) NOT NULL,\n" +
+//        "        email VARCHAR(255) NOT NULL,\n" +
+//        "        passport VARCHAR(255) NOT NULL,\n" +
+//        "        PRIMARY KEY (idClient),\n" +
+//        "        FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
+//        "        );");
+//        result = stmt.executeUpdate("CREATE TABLE Credit (\n" +
+//        "        idCredit VARCHAR(255) NOT NULL,\n" +
+//        "        idBank VARCHAR(255),        " +
+//        "        name VARCHAR(255) NOT NULL,\n" +
+//        "        limit BIGINT NOT NULL,\n" +
+//        "        percent FLOAT NOT NULL,\n" +
+//        "        PRIMARY KEY (idCredit),\n" +
+//        "        FOREIGN KEY (idBank) REFERENCES Bank(idBank)" +
+//        "        );");
+//        result = stmt.executeUpdate("    CREATE TABLE Payments (\n" +
+//        "        idClientCredit VARCHAR(255) NOT NULL,\n" +
+//        "        date VARCHAR(255) NOT NULL,\n" +
+//        "        sumPayment BIGINT NOT NULL,\n" +
+//        "        sumPaymentBody BIGINT NOT NULL,\n" +
+//        "        sumPaymentPercents BIGINT NOT NULL,\n" +
+//        "        balanceOwed BIGINT NOT NULL,\n" +
+//        "        PRIMARY KEY (idClientCredit)" +
+//        "        );");
+//        result = stmt.executeUpdate("    CREATE TABLE ClientCredit (\n" +
+//        "        idClientCredit VARCHAR(255) NOT NULL,\n" +
+//        "        idCredit VARCHAR(255) NOT NULL,\n" +
+//        "        idClient VARCHAR(255) NOT NULL,\n" +
+//        "        PRIMARY KEY (idClientCredit),\n" +
+//        "         FOREIGN KEY(idCredit) REFERENCES Credit(idCredit) ON DELETE CASCADE,\n" +
+//        "         FOREIGN KEY(idClient) REFERENCES Client(idClient) ON DELETE CASCADE,\n" +
+//        "         FOREIGN KEY(idClientCredit) REFERENCES Payments(idClientCredit) ON DELETE CASCADE,\n" +
+//        "\n" +
+//        "        );");

@@ -15,7 +15,7 @@ public class CreateTables {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
             con = DriverManager.getConnection("jdbc:hsqldb:file:database", "sa", "");
             stmt = con.createStatement();
-            // result = stmt.executeUpdate("DROP TABLE Payments; DROP TABLE CLIENTCREDIT; DROP TABLE CLIENT;DROP TABLE CREDIT;  DROP TABLE Bank;   ");
+         //    result = stmt.executeUpdate("drop table PAYMENTS cascade; drop table CLIENTCREDIT cascade; drop table CLIENT cascade; drop table CREDIT cascade; drop table BANK cascade;");
 //
             result = stmt.executeUpdate("    CREATE TABLE Bank (\n" +
                     "        idBank VARCHAR(255) NOT NULL,\n" +
@@ -50,13 +50,13 @@ public class CreateTables {
                     "        PRIMARY KEY (idClientCredit)" +
                     "        );");
             result = stmt.executeUpdate("    CREATE TABLE ClientCredit (\n" +
-                    "clientFullName VARCHAR(255) NOT NULL," +
-                    "creditName VARCHAR(255) NOT NULL," +
-                    "creditSum VARCHAR(255) NOT NULL," +
-                    "time BIGINT NOT NULL," +
+                    "clientFullName VARCHAR(255)," +
+                    "creditName VARCHAR(255)," +
+                    "creditSum VARCHAR(255)," +
+                    "start DATE," +
+                    "percent FLOAT,"+
+                    "time BIGINT," +
                     "        idClientCredit VARCHAR(255) NOT NULL,\n" +
-                    "        idCredit VARCHAR(255) NOT NULL,\n" +
-                    "        idClient VARCHAR(255) NOT NULL,\n" +
                     "        PRIMARY KEY (idClientCredit));");
         } catch (Exception e) {
             e.printStackTrace(System.out);

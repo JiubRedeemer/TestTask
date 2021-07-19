@@ -1,5 +1,6 @@
 package com.haulmont.testtask.web;
 
+import com.haulmont.testtask.dao.ClientCreditDB;
 import com.haulmont.testtask.dao.ClientDB;
 import com.haulmont.testtask.entities.Client;
 import com.vaadin.server.UserError;
@@ -15,6 +16,7 @@ public class ClientEditUI extends VerticalLayout {
     ClientView clientView;
 
     private ClientDB clientDB = new ClientDB();
+    private ClientCreditDB clientCreditDB = new ClientCreditDB();
     private TextField tfName = new TextField("Name");
     private TextField tfSurname = new TextField("Surname");
     private TextField tfPatronymic = new TextField("Patronymic");
@@ -36,7 +38,8 @@ public class ClientEditUI extends VerticalLayout {
         cancel.addClickListener(event -> this.setVisible(false));
         addClickListeners(clientView);
         layout.addComponents(add, delete, update, cancel);
-        addComponents(tfName, tfSurname, tfPatronymic, tfPhone, tfEmail, tfPassport, layout);
+        addComponents(tfSurname, tfName, tfPatronymic, tfPhone, tfEmail, tfPassport, layout);
+
     }
 
     public void editConfigure(Client client) {
@@ -48,6 +51,8 @@ public class ClientEditUI extends VerticalLayout {
             update.setVisible(false);
         } else {
             this.client = client;
+
+
             setClient(client);
             add.setVisible(false);
             delete.setVisible(true);
@@ -61,7 +66,7 @@ public class ClientEditUI extends VerticalLayout {
         tfPassport.setPlaceholder("Enter passport");
     }
 
-    private void clear(){
+    private void clear() {
         tfName.clear();
         tfSurname.clear();
         tfPatronymic.clear();
@@ -70,10 +75,11 @@ public class ClientEditUI extends VerticalLayout {
         tfPassport.clear();
     }
 
-    private void addClickListeners(ClientView clientView){
+    private void addClickListeners(ClientView clientView) {
+
         add.addClickListener(event -> {
             try {
-                if (fieldCheck()){
+                if (fieldCheck()) {
                     addClient();
                     clientView.updateGrid();
                     this.setVisible(false);
@@ -85,10 +91,12 @@ public class ClientEditUI extends VerticalLayout {
         });
         update.addClickListener(event -> {
             try {
-                updateClient(client);
-                clientView.updateGrid();
-                this.setVisible(false);
-                clear();
+                if (fieldCheck()) {
+                    updateClient(client);
+                    clientView.updateGrid();
+                    this.setVisible(false);
+                    clear();
+                }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -96,27 +104,52 @@ public class ClientEditUI extends VerticalLayout {
 
         delete.addClickListener(event -> {
             try {
-                clientDB.deleteClient(client);
-                clientView.updateGrid();
-                this.setVisible(false);
-                clear();
+
+                if (client.getClientCredits().isEmpty()) {
+                    clientDB.deleteClient(client);
+                    clientView.updateGrid();
+                    this.setVisible(false);
+                    clear();
+                } else delete.setComponentError(new UserError("Client has credits"));
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
     }
 
-    private boolean fieldCheck(){
-        if (tfName.isEmpty() || tfSurname.isEmpty() || tfPatronymic.isEmpty() || tfEmail.isEmpty() || tfPhone.isEmpty() || tfPassport.isEmpty()){
+    private boolean fieldCheck() {
+        String rgxEmail = "[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+";
+        String rgxPhone = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$";
+        String rgxPassport = "\\d{4}\\s\\d{6}";
+        if (tfName.isEmpty() || tfSurname.isEmpty() || tfPatronymic.isEmpty() || tfEmail.isEmpty() || tfPhone.isEmpty() || tfPassport.isEmpty()) {
             add.setComponentError(new UserError("Не все поля введены"));
             return false;
         } else {
             add.setComponentError(null);
+            tfPhone.setComponentError(null);
+            tfEmail.setComponentError(null);
+            tfPassport.setComponentError(null);
+
+            if (!tfPhone.getValue().matches(rgxPhone)) {
+                tfPhone.setComponentError(
+                        new UserError("Введите телефон, например: +71231231234"));
+                return false;
+            }
+            if (!tfEmail.getValue().matches(rgxEmail)) {
+                tfEmail.setComponentError(
+                        new UserError("Введите email, например: example@gmail.com"));
+                return false;
+            }
+            if (!tfPassport.getValue().matches(rgxPassport)) {
+                tfPassport.setComponentError(new UserError("Введите серию и номер паспорта, например: 6311 123456"));
+                return false;
+            }
+
             return true;
         }
     }
 
-    private void setClient(Client client){
+    private void setClient(Client client) {
         tfName.setValue(client.getName());
         tfSurname.setValue(client.getSurname());
         tfPatronymic.setValue(client.getPatronymic());
@@ -135,7 +168,7 @@ public class ClientEditUI extends VerticalLayout {
         clientDB.addClient(client);
     }
 
-    private void updateClient(Client client) throws SQLException{
+    private void updateClient(Client client) throws SQLException {
         client.setName(tfName.getValue());
         client.setSurname(tfSurname.getValue());
         client.setPatronymic(tfPatronymic.getValue());

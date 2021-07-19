@@ -3,6 +3,7 @@ package com.haulmont.testtask.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Credit {
@@ -21,12 +22,13 @@ public class Credit {
     @Column(name = "percent")
     private float percent;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idBank")
     private Bank bank;
 
-    @OneToOne(mappedBy = "credit")
-    private ClientCredit clientCredit;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+    @JoinColumn(name = "idCredit")
+    private List<ClientCredit> clientCredits;
 
     public Credit() {
     }
@@ -35,21 +37,6 @@ public class Credit {
         this.name = name;
         this.limit = limit;
         this.percent = percent;
-    }
-
-    public Credit(String name, long limit, float percent, Bank bank) {
-        this.name = name;
-        this.limit = limit;
-        this.percent = percent;
-        this.bank = bank;
-    }
-
-    public Credit(String name, long limit, float percent, Bank bank, ClientCredit clientCredit) {
-        this.name = name;
-        this.limit = limit;
-        this.percent = percent;
-        this.bank = bank;
-        this.clientCredit = clientCredit;
     }
 
     public String getIdCredit() {
@@ -92,11 +79,29 @@ public class Credit {
         this.bank = bank;
     }
 
-    public ClientCredit getClientCredit() {
-        return clientCredit;
+    public List<ClientCredit> getClientCredits() {
+        return clientCredits;
     }
 
-    public void setClientCredit(ClientCredit clientCredit) {
-        this.clientCredit = clientCredit;
+    public void setClientCredits(List<ClientCredit> clientCredits) {
+        for (ClientCredit clientCredit:
+                clientCredits) {
+            clientCredit.setCreditName(name);
+            clientCredit.setCredit(this);
+            clientCredit.setPercent(this.percent);
+        }
+        this.clientCredits = clientCredits;
+    }
+
+    @Override
+    public String toString() {
+        return "Credit{" +
+                "idCredit='" + idCredit + '\'' +
+                ", name='" + name + '\'' +
+                ", limit=" + limit +
+                ", percent=" + percent +
+                ", bank=" + bank +
+                ", clientCredits=" + clientCredits +
+                '}';
     }
 }

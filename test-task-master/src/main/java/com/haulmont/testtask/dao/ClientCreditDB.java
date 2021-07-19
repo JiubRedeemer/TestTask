@@ -78,6 +78,8 @@ public class ClientCreditDB implements ClientCreditDAO{
 
     @Override
     public void deleteClientCredit(ClientCredit clientCredit) throws SQLException {
+        if(clientCredit.getClient()!=null) clientCredit.setClient(null);
+        if(clientCredit.getCredit()!=null) clientCredit.setCredit(null);
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();

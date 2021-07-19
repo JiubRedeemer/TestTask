@@ -18,7 +18,7 @@ public class CreditGiveView extends VerticalLayout {
     private ClientCreditDB clientCreditDB = new ClientCreditDB();
     private CreditGiveEditUI addNew = new CreditGiveEditUI(new ClientCredit(), this);
 
-    public CreditGiveView() throws SQLException{
+    public CreditGiveView(PaymentsView paymentsView) throws SQLException{
         setSizeFull();
         gridConfigure();
         HorizontalLayout layout = new HorizontalLayout();
@@ -27,6 +27,7 @@ public class CreditGiveView extends VerticalLayout {
         gridLayout.addComponents(grid, addNew);
         gridLayout.setExpandRatio(grid, 1);
         layout.addComponents(add);
+        addNew.paymentsView = paymentsView;
         add.addClickListener(clickEvent -> {addNew.setVisible(true); addNew.editConfigure(null);});
         updateList();
         addComponents(layout, gridLayout);

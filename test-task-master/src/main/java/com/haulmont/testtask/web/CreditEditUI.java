@@ -1,5 +1,6 @@
 package com.haulmont.testtask.web;
 
+import com.haulmont.testtask.dao.ClientCreditDB;
 import com.haulmont.testtask.dao.CreditDB;
 import com.haulmont.testtask.entities.Credit;
 import com.vaadin.server.UserError;
@@ -15,6 +16,7 @@ public class CreditEditUI extends VerticalLayout {
     CreditView creditView;
 
     private CreditDB creditDB = new CreditDB();
+    private ClientCreditDB clientCreditDB = new ClientCreditDB();
     private TextField tfName = new TextField("Name");
     private TextField tfLimit = new TextField("Limit");
     private TextField tfPercent = new TextField("Percent");
@@ -67,7 +69,7 @@ public class CreditEditUI extends VerticalLayout {
         add.addClickListener(event -> {
             try {
                 if (fieldCheck()) {
-                    addClient();
+                    addCredit();
                     creditView.updateGrid();
                     this.setVisible(false);
                     clear();
@@ -78,10 +80,12 @@ public class CreditEditUI extends VerticalLayout {
         });
         update.addClickListener(event -> {
             try {
-                updateCredit(credit);
-                creditView.updateGrid();
-                this.setVisible(false);
-                clear();
+                if (fieldCheck()) {
+                    updateCredit(credit);
+                    creditView.updateGrid();
+                    this.setVisible(false);
+                    clear();
+                }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -89,10 +93,13 @@ public class CreditEditUI extends VerticalLayout {
 
         delete.addClickListener(event -> {
             try {
-                creditDB.deleteCredit(credit);
-                creditView.updateGrid();
-                this.setVisible(false);
-                clear();
+                if (credit.getClientCredits().isEmpty()) {
+                    creditDB.deleteCredit(credit);
+                    creditView.updateGrid();
+                    this.setVisible(false);
+                    clear();
+                } else delete.setComponentError(new UserError("Credit has clients"));
+
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -100,11 +107,28 @@ public class CreditEditUI extends VerticalLayout {
     }
 
     private boolean fieldCheck() {
+        String rgxLimit = "^-?\\d+$";
+        String rgxPercent = "^[0-9]*[.,]?[0-9]+$";
         if (tfName.isEmpty() || tfLimit.isEmpty() || tfPercent.isEmpty()) {
             add.setComponentError(new UserError("Не все поля введены"));
             return false;
         } else {
             add.setComponentError(null);
+            tfLimit.setComponentError(null);
+            tfPercent.setComponentError(null);
+
+            if (!tfLimit.getValue().matches(rgxLimit)) {
+                tfLimit.setComponentError(
+                        new UserError("Введите максимальную сумму кредита, например: 1000000"));
+                return false;
+            }
+            if (!tfPercent.getValue().matches(rgxPercent)) {
+                tfPercent.setComponentError(
+                        new UserError("Введите процентную ставку, например: 12.4"));
+                return false;
+            }
+
+
             return true;
         }
     }
@@ -112,14 +136,14 @@ public class CreditEditUI extends VerticalLayout {
     private void setCredit(Credit credit) {
         tfName.setValue(credit.getName());
         tfLimit.setValue(Long.toString(credit.getLimit()));
-        tfPercent.setValue(Float.toString(credit.getPercent()));
+        tfPercent.setValue(Float.toString(credit.getPercent() * 100));
 
     }
 
-    private void addClient() throws SQLException {
+    private void addCredit() throws SQLException {
         Credit credit = new Credit(tfName.getValue(),
                 Long.parseLong(tfLimit.getValue()),
-                Float.parseFloat(tfPercent.getValue()));
+                (Float.parseFloat(tfPercent.getValue())) / 100);
 
         creditDB.addCredit(credit);
     }
@@ -127,7 +151,7 @@ public class CreditEditUI extends VerticalLayout {
     private void updateCredit(Credit credit) throws SQLException {
         credit.setName(tfName.getValue());
         credit.setLimit(Long.parseLong(tfLimit.getValue()));
-        credit.setPercent(Float.parseFloat(tfPercent.getValue()));
+        credit.setPercent(Float.parseFloat(tfPercent.getValue()) / 100);
 
         creditDB.updateCredit(credit);
     }

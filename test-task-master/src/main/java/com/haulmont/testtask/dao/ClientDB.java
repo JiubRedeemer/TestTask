@@ -11,16 +11,19 @@ import java.util.List;
 public class ClientDB implements ClientDAO {
     @Override
     public void addClient(Client client) throws SQLException {
+
         Session session = null;
-        try {
+        try{
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.save(client);
             session.getTransaction().commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            if (session != null && session.isOpen()) session.close();
+            if(session != null && session.isOpen()){
+                session.close();
+            }
         }
     }
 

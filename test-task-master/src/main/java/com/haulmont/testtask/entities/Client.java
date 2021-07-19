@@ -1,8 +1,10 @@
 package com.haulmont.testtask.entities;
 
+import com.sun.istack.Nullable;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "CLIENT")
@@ -33,45 +35,22 @@ public class Client {
     @JoinColumn(name = "idBank")
     private Bank bank;
 
-    @OneToOne(mappedBy = "client")
-    private ClientCredit clientCredit;
+    @Nullable
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+    @JoinColumn(name = "idClient")
+    private List<ClientCredit> clientCredits;
 
     public Client() {
     }
 
     public Client(String name, String surname, String patronymic, String phone, String email, String passport) {
+        this.FIO = surname + " " + name + " " + patronymic;
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
         this.phone = phone;
         this.email = email;
         this.passport = passport;
-        this.FIO = surname + " " + name + " " + patronymic;
-    }
-
-    public Client(String name, String surname, String patronymic, String phone, String email, String passport, Bank bank) {
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
-        this.phone = phone;
-        this.email = email;
-        this.passport = passport;
-        this.bank = bank;
-        this.FIO = surname + " " + name + " " + patronymic;
-
-    }
-
-    public Client(String name, String surname, String patronymic, String phone, String email, String passport, Bank bank, ClientCredit clientCredit) {
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
-        this.phone = phone;
-        this.email = email;
-        this.passport = passport;
-        this.bank = bank;
-        this.clientCredit = clientCredit;
-        this.FIO = surname + " " + name + " " + patronymic;
-
     }
 
     public String getIdClient() {
@@ -80,6 +59,14 @@ public class Client {
 
     public void setIdClient(String idClient) {
         this.idClient = idClient;
+    }
+
+    public String getFIO() {
+        return FIO;
+    }
+
+    public void setFIO(String FIO) {
+        this.FIO = FIO;
     }
 
     public String getName() {
@@ -138,26 +125,24 @@ public class Client {
         this.bank = bank;
     }
 
-    public ClientCredit getClientCredit() {
-        return clientCredit;
+    public List<ClientCredit> getClientCredits() {
+        return clientCredits;
     }
 
-    public void setClientCredit(ClientCredit credit) {
-        this.clientCredit = credit;
-    }
-
-    public String getFIO() {
-        return FIO;
-    }
-
-    public void setFIO(String FIO) {
-        this.FIO = FIO;
+    public void setClientCredits(List<ClientCredit> clientCredits) {
+        for (ClientCredit clientCredit:
+             clientCredits) {
+            clientCredit.setClientFullName(FIO);
+            clientCredit.setClient(this);
+        }
+        this.clientCredits = clientCredits;
     }
 
     @Override
     public String toString() {
         return "Client{" +
                 "idClient='" + idClient + '\'' +
+                ", FIO='" + FIO + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", patronymic='" + patronymic + '\'' +
@@ -165,7 +150,7 @@ public class Client {
                 ", email='" + email + '\'' +
                 ", passport='" + passport + '\'' +
                 ", bank=" + bank +
-                ", clientCredit=" + clientCredit +
+                ", clientCredits=" + clientCredits +
                 '}';
     }
 }

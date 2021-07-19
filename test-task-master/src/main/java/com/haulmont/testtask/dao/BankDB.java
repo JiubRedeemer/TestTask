@@ -20,7 +20,6 @@ public class BankDB implements BankDAO{
             session.beginTransaction();
             session.save(bank);
             session.getTransaction().commit();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

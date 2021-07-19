@@ -3,16 +3,19 @@ package com.haulmont.testtask.web;
 import com.haulmont.testtask.dao.ClientCreditDB;
 import com.haulmont.testtask.dao.ClientDB;
 import com.haulmont.testtask.dao.CreditDB;
-import com.haulmont.testtask.dao.PaymentsDB;
 import com.haulmont.testtask.entities.Client;
 import com.haulmont.testtask.entities.ClientCredit;
 import com.haulmont.testtask.entities.Credit;
+import com.haulmont.testtask.entities.Payments;
 import com.vaadin.data.Binder;
-import com.vaadin.data.converter.StringToLongConverter;
+import com.vaadin.server.Page;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.*;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreditGiveEditUI extends VerticalLayout {
 
@@ -20,6 +23,7 @@ public class CreditGiveEditUI extends VerticalLayout {
     private ComboBox<Credit> creditComboBox = new ComboBox<>("Credit");
     private TextField tfCreditSum = new TextField("Credit sum");
     private TextField tfTimeOfCredit = new TextField("Months");
+    private DateField dateField = new DateField("Start");
 
     private Button add = new Button("Добавить");
     private Button cancel = new Button("Отмена");
@@ -29,73 +33,94 @@ public class CreditGiveEditUI extends VerticalLayout {
     private Label paymentSum = new Label("Payment sum");
     private Label overpay = new Label("Overpay");
 
-    private ClientCredit clientCredit;
     private CreditGiveView creditGiveView;
+    private ClientCredit clientCredit;
+    public PaymentsView paymentsView;
+
+    private ClientCreditDB clientCreditDB = new ClientCreditDB();
     private ClientDB clientDB = new ClientDB();
     private CreditDB creditDB = new CreditDB();
-    private ClientCreditDB clientCreditDB = new ClientCreditDB();
-    private PaymentsDB paymentsDB = new PaymentsDB();
     private Binder<ClientCredit> binder = new Binder();
-
+    private List<Payments> paymentsListDiff = new ArrayList<>();
+    private List<Payments> paymentsListAnn = new ArrayList<>();
 
     public CreditGiveEditUI(ClientCredit clientCredit, CreditGiveView creditGiveView) throws SQLException {
         this.clientCredit = clientCredit;
+        this.creditGiveView = creditGiveView;
         setVisible(false);
         setWidthUndefined();
-        updateFromComboBox();
         HorizontalLayout layout = new HorizontalLayout();
         cancel.addClickListener(event -> this.setVisible(false));
         addClickListeners(creditGiveView);
-        layout.addComponents(add, delete, update, cancel, calculate);
-        addComponents(clientComboBox, creditComboBox, tfCreditSum, tfTimeOfCredit, layout);
+        updateSelects();
+        layout.addComponents(add, update, delete, cancel, calculate);
+        addComponents(clientComboBox, creditComboBox, tfCreditSum, tfTimeOfCredit, dateField, layout);
     }
 
     public void editConfigure(ClientCredit clientCredit) {
         setVisible(true);
         try {
-            updateFromComboBox();
+            updateSelects();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
         if (clientCredit == null) {
             clear();
-            update.setVisible(false);
-            delete.setVisible(false);
-            paymentSum.setVisible(false);
-            calculate.setVisible(true);
             add.setVisible(true);
+            delete.setVisible(false);
+            update.setVisible(false);
+            calculate.setVisible(false);
+            paymentSum.setVisible(false);
+            overpay.setVisible(false);
         } else {
+            clear();
             this.clientCredit = clientCredit;
             setClientCredit(clientCredit);
             add.setVisible(false);
-            calculate.setVisible(false);
-            paymentSum.setVisible(false);
             delete.setVisible(true);
             update.setVisible(true);
-            // TODO: CALCULATING
-
+            calculate.setVisible(true);
         }
-        binder.forField(tfTimeOfCredit).withConverter(new StringToLongConverter("Поле введено неверно"))
-                .bind(ClientCredit::getTime,ClientCredit::setTime);
         tfCreditSum.setPlaceholder("Enter credit sum");
-        tfTimeOfCredit.setPlaceholder("Enter time");
+        tfTimeOfCredit.setPlaceholder("Enter credit time");
+        clientComboBox.setPlaceholder("Select client");
+        creditComboBox.setPlaceholder("Select credit");
     }
 
+    private void setClientCredit(ClientCredit clientCredit) {
+
+//        tfCreditSum.setValue("" + clientCredit.getCreditSum());
+//        tfTimeOfCredit.setValue(""+clientCredit.getTime());
+//        clientComboBox.setValue(clientCredit.getClient());
+//        creditComboBox.setValue(clientCredit.getCredit());
+
+    }
 
     private void clear() {
         clientComboBox.clear();
         creditComboBox.clear();
-        tfCreditSum.clear();
         tfTimeOfCredit.clear();
-        paymentSum.setValue("");
+        tfCreditSum.clear();
+        dateField.clear();
     }
 
     private void addClickListeners(CreditGiveView creditGiveView) {
-        add.addClickListener(event -> {
-            if (fieldCheck()) {
+        calculate.addClickListener(clickEvent -> {
+            try {
+                createDiffPayment(clientCredit);
+                createAnnPayment(clientCredit);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+        add.addClickListener(clickEvent -> {
+            if (filedCheck()) {
                 try {
-                    clientCreditDB.addClientCredit(getClientCredit());
+                    addClientCredit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
                     creditGiveView.updateGrid();
                     this.setVisible(false);
                     clear();
@@ -104,19 +129,32 @@ public class CreditGiveEditUI extends VerticalLayout {
                 }
             }
         });
-        update.addClickListener(event -> {
+
+        update.addClickListener(clickEvent -> {
+            if (filedCheck()) {
+                try {
+                    updateClientCredit(clientCredit);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    creditGiveView.updateGrid();
+                    this.setVisible(false);
+                    clear();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+        });
+
+        delete.addClickListener(clickEvent -> {
             try {
-                updateClientCredit(clientCredit);
-                creditGiveView.updateGrid();
-                this.setVisible(false);
-                clear();
+                deleteClientCredit(clientCredit);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-        });
-        delete.addClickListener(event ->{
             try {
-                clientCreditDB.deleteClientCredit(clientCredit);
                 creditGiveView.updateGrid();
                 this.setVisible(false);
                 clear();
@@ -126,56 +164,130 @@ public class CreditGiveEditUI extends VerticalLayout {
         });
     }
 
-    private void setClientCredit(ClientCredit clientCredit) {
-        clientComboBox.setValue(clientCredit.getClient());
-        creditComboBox.setValue(clientCredit.getCredit());
-        tfCreditSum.setValue(Long.toString(clientCredit.getCreditSum()));
-        tfTimeOfCredit.setValue(Long.toString(clientCredit.getTime()));
-    }
-
-
-    private void updateClientCredit(ClientCredit clientCredit) throws SQLException {
+    private void addClientCredit() throws Exception {
+        ClientCredit clientCredit = new ClientCredit(Long.parseLong(tfCreditSum.getValue()),
+                Long.parseLong(tfTimeOfCredit.getValue()));
         clientCredit.setClient(clientComboBox.getValue());
         clientCredit.setCredit(creditComboBox.getValue());
+        clientCredit.setStart(dateField.getValue());
+        clientComboBox.getValue().getClientCredits().add(clientCredit);
+        creditComboBox.getValue().getClientCredits().add(clientCredit);
+        clientCreditDB.addClientCredit(clientCredit);
+    }
+
+    private void updateClientCredit(ClientCredit clientCredit) throws Exception {
+
+        clientCredit.getClient().getClientCredits().remove(clientCredit);
+        clientCredit.getCredit().getClientCredits().remove(clientCredit);
+        clientDB.updateClient(clientCredit.getClient());
+        creditDB.updateCredit(clientCredit.getCredit());
+
+        clientCredit.setClient(clientComboBox.getValue());
+        clientCredit.setCredit(creditComboBox.getValue());
+        clientCredit.getClient().getClientCredits().add(clientCredit);
+        clientCredit.getCredit().getClientCredits().add(clientCredit);
+        clientDB.updateClient(clientCredit.getClient());
+        creditDB.updateCredit(clientCredit.getCredit());
+
+
         clientCredit.setCreditSum(Long.parseLong(tfCreditSum.getValue()));
         clientCredit.setTime(Long.parseLong(tfTimeOfCredit.getValue()));
-
-
+        clientCredit.setStart(dateField.getValue());
         clientCreditDB.updateClientCredit(clientCredit);
+        Page.getCurrent().reload();
     }
 
-    private void updateFromComboBox() throws SQLException{
-        clientComboBox.setItems(clientDB.getAllClients());
-        clientComboBox.setItemCaptionGenerator(Client::getFIO);
-        creditComboBox.setItems(creditDB.getAllCredits());
-        creditComboBox.setItemCaptionGenerator(Credit::getName);
-        creditComboBox.addValueChangeListener(valueChangeEvent -> {
-            if (creditComboBox.getValue() == null)
-                binder.forField(tfCreditSum).withConverter(new StringToLongConverter("Поле введено неверно"))
-                        .bind(ClientCredit::getCreditSum, ClientCredit::setCreditSum);
-            else
-                binder.forField(tfCreditSum).withConverter(new StringToLongConverter("Поле введено неверно"))
-                        .withValidator(event -> event <= creditComboBox.getValue().getLimit(), "Сумма кредита не должна быть выше " + creditComboBox.getValue().getLimit())
-                        .bind(ClientCredit::getCreditSum, ClientCredit::setCreditSum);
-        });
+    private void deleteClientCredit(ClientCredit clientCredit) throws SQLException {
+        clientCredit.getClient().getClientCredits().remove(clientCredit);
+        clientCredit.getCredit().getClientCredits().remove(clientCredit);
+
+        clientDB.updateClient(clientCredit.getClient());
+        creditDB.updateCredit(clientCredit.getCredit());
+        clientCreditDB.deleteClientCredit(clientCredit);
+        creditGiveView.updateGrid();
+        this.setVisible(false);
+        clear();
+        Page.getCurrent().reload();
     }
 
-    private boolean fieldCheck() {
-        if (clientComboBox.isEmpty() || creditComboBox.isEmpty() || tfCreditSum.isEmpty() || tfTimeOfCredit.isEmpty()) {
-            add.setComponentError(new UserError("Not all fields are entered!"));
+    private boolean filedCheck() {
+        String rgxTimeOfCredit = "^-?\\d+$";
+        String rgxCreditSum = "^-?\\d+$";
+        if (clientComboBox.isEmpty() || creditComboBox.isEmpty() || tfCreditSum.isEmpty() || tfTimeOfCredit.isEmpty() || dateField.isEmpty()) {
+            add.setComponentError(new UserError("Error!"));
             return false;
         } else {
             add.setComponentError(null);
+            tfTimeOfCredit.setComponentError(null);
+            tfCreditSum.setComponentError(null);
+
+            if (!tfTimeOfCredit.getValue().matches(rgxTimeOfCredit)) {
+                tfTimeOfCredit.setComponentError(
+                        new UserError("Введите количество месяцев, например: 24"));
+                return false;
+            }
+            if (!tfCreditSum.getValue().matches(rgxCreditSum)) {
+                tfCreditSum.setComponentError(
+                        new UserError("Введите сумму кредита, например: 100000"));
+                return false;
+            }
             return true;
         }
     }
 
-    private ClientCredit getClientCredit(){
-        clientCredit.setClient(clientComboBox.getValue());
-        clientCredit.setCredit(creditComboBox.getValue());
-        clientCredit.setCreditSum(Long.parseLong(tfCreditSum.getValue()));
-        clientCredit.setTime(Long.parseLong(tfTimeOfCredit.getValue()));
-        return clientCredit;
+    private void updateSelects() throws SQLException {
+        clientComboBox.setItems(clientDB.getAllClients());
+        clientComboBox.setItemCaptionGenerator(Client::getFIO);
+        creditComboBox.setItems(creditDB.getAllCredits());
+        creditComboBox.setItemCaptionGenerator(Credit::getName);
+    }
+
+    private void createDiffPayment(ClientCredit clientCredit) throws SQLException {
+        LocalDate currentDate = clientCredit.getStart();
+        long owed = clientCredit.getCreditSum();
+        long timePaid = 1L;
+        for (int i = 0; i < clientCredit.getTime(); i++) {
+            Payments payment = new Payments();
+            payment.setDate(currentDate);
+            currentDate = currentDate.plusMonths(1);
+            payment.setSumPaymentBody(clientCredit.getCreditSum() / clientCredit.getTime());
+            payment.setSumPaymentPercents((long) (owed * (clientCredit.getPercent() / 12)));
+            owed = clientCredit.getCreditSum() - (payment.getSumPaymentBody() * timePaid);
+            timePaid++;
+            payment.setSumPayment(payment.getSumPaymentBody() + payment.getSumPaymentPercents());
+            payment.setBalanceOwed(owed);
+            paymentsListDiff.add(payment);
+
+        }
+        paymentsListDiff.get(paymentsListDiff.size() - 1).setSumPayment(paymentsListDiff.get(paymentsListDiff.size() - 1).getSumPayment() + owed);
+        paymentsListDiff.get(paymentsListDiff.size() - 1).setBalanceOwed(0);
+        paymentsView.setPaymentsListDiff(paymentsListDiff);
+    }
+
+    private void createAnnPayment(ClientCredit clientCredit) throws SQLException {
+        LocalDate currentDate = clientCredit.getStart();
+        long owed = clientCredit.getCreditSum();
+        long timePaid = 0L;
+        for (int i = 0; i < clientCredit.getTime(); i++) {
+            Payments payment = new Payments();
+            payment.setDate(currentDate);
+            currentDate = currentDate.plusMonths(1);
+
+            payment.setSumPayment((long) (clientCredit.getCreditSum() * ((clientCredit.getPercent() / 12.0f) +
+                    ((clientCredit.getPercent() / 12.0f) /
+                            ((Math.pow(1 + clientCredit.getPercent() / 12, clientCredit.getTime()) - 1))))));
+            payment.setSumPaymentPercents((long) (owed * clientCredit.getPercent() / 12));
+            payment.setSumPaymentBody(payment.getSumPayment() - payment.getSumPaymentPercents());
+            owed -= payment.getSumPaymentBody();
+            payment.setBalanceOwed(owed);
+
+
+            paymentsListAnn.add(payment);
+
+        }
+        paymentsListAnn.get(paymentsListAnn.size() - 1).setSumPayment(paymentsListAnn.get(paymentsListAnn.size() - 1).getSumPayment() + owed);
+        paymentsListAnn.get(paymentsListAnn.size() - 1).setBalanceOwed(0);
+        paymentsView.setPaymentsListAnn(paymentsListAnn);
     }
 }
 

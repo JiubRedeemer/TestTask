@@ -3,7 +3,9 @@ package com.haulmont.testtask.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Payments {
@@ -12,7 +14,7 @@ public class Payments {
     @Column(name = "idClientCredit")
     private String idClientCredit;
     @Column(name = "date")
-    private Date date;
+    private LocalDate date;
     @Column(name = "sumPayment")
     private long sumPayment;
     @Column(name = "sumPaymentBody")
@@ -22,30 +24,20 @@ public class Payments {
     @Column(name = "balanceOwed")
     private long balanceOwed;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "idClientCredit")
-    private ClientCredit clientCredit;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_Payments")
+    private List<ClientCredit> clientCredits;
 
     public Payments() {
     }
 
 
-    public Payments(Date date, long sumPayment, long sumPaymentBody, long sumPaymentPercents, long balanceOwed) {
+    public Payments(LocalDate date, long sumPayment, long sumPaymentBody, long sumPaymentPercents, long balanceOwed) {
         this.date = date;
         this.sumPayment = sumPayment;
         this.sumPaymentBody = sumPaymentBody;
         this.sumPaymentPercents = sumPaymentPercents;
         this.balanceOwed = balanceOwed;
-    }
-
-    public Payments(Date date, long sumPayment, long sumPaymentBody, long sumPaymentPercents, long balanceOwed, ClientCredit clientCredit) {
-        this.date = date;
-        this.sumPayment = sumPayment;
-        this.sumPaymentBody = sumPaymentBody;
-        this.sumPaymentPercents = sumPaymentPercents;
-        this.balanceOwed = balanceOwed;
-        this.clientCredit = clientCredit;
     }
 
     public String getIdClientCredit() {
@@ -56,11 +48,11 @@ public class Payments {
         this.idClientCredit = idClientCredit;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -68,24 +60,24 @@ public class Payments {
         return sumPayment;
     }
 
-    public void setSumPayment(long sum) {
-        this.sumPayment = sum;
+    public void setSumPayment(long sumPayment) {
+        this.sumPayment = sumPayment;
     }
 
     public long getSumPaymentBody() {
         return sumPaymentBody;
     }
 
-    public void setSumPaymentBody(long sumPayBody) {
-        this.sumPaymentBody = sumPayBody;
+    public void setSumPaymentBody(long sumPaymentBody) {
+        this.sumPaymentBody = sumPaymentBody;
     }
 
     public long getSumPaymentPercents() {
         return sumPaymentPercents;
     }
 
-    public void setSumPaymentPercents(long sumPayPercents) {
-        this.sumPaymentPercents = sumPayPercents;
+    public void setSumPaymentPercents(long sumPaymentPercents) {
+        this.sumPaymentPercents = sumPaymentPercents;
     }
 
     public long getBalanceOwed() {
@@ -96,12 +88,12 @@ public class Payments {
         this.balanceOwed = balanceOwed;
     }
 
-    public ClientCredit getClientCredit() {
-        return clientCredit;
+    public List<ClientCredit> getClientCredits() {
+        return clientCredits;
     }
 
-    public void setClientCredit(ClientCredit clientCredit) {
-        this.clientCredit = clientCredit;
+    public void setClientCredits(List<ClientCredit> clientCredits) {
+        this.clientCredits = clientCredits;
     }
 
     @Override
@@ -113,7 +105,7 @@ public class Payments {
                 ", sumPaymentBody=" + sumPaymentBody +
                 ", sumPaymentPercents=" + sumPaymentPercents +
                 ", balanceOwed=" + balanceOwed +
-                ", clientCredit=" + clientCredit +
+                ", clientCredits=" + clientCredits +
                 '}';
     }
 }

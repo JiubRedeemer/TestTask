@@ -3,6 +3,8 @@ package com.haulmont.testtask.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 public class ClientCredit {
@@ -22,45 +24,43 @@ public class ClientCredit {
     private long creditSum;
 
     @Column(name = "percent")
-    private String percent;
+    private float percent;
 
     @Column(name = "time")
     private long time;
 
-   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-   @JoinColumn(name = "idClient")
-   private Client client;
+    @Column(name = "start")
+    private LocalDate start;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCredit")
-    private Credit credit;
+//   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//   @JoinColumn(name = "idClient")
+//   private Client client;
+//
+//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "idCredit")
+//    private Credit credit;
 
-    @OneToOne(mappedBy = "clientCredit", orphanRemoval = true, fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_payments")
     private Payments payments;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idСlient")
+    private Client client;
+
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCredit")
+    private Credit credit;
 
     public ClientCredit() {
     }
 
-    public ClientCredit(Client client, Credit credit, long creditSum, long time) throws Exception {
-        this.client = client;
-        this.credit = credit;
+    public ClientCredit(long creditSum, long time) {
+        this.creditSum = creditSum;
         this.time = time;
-        if(creditSum < credit.getLimit())
-        this.creditSum = creditSum; else throw new Exception("Credit sum > credit limit");
-        clientFullName = client.getName()+" "+client.getSurname()+" "+client.getPatronymic();
-        creditName=credit.getName();
     }
-
-    public ClientCredit(Client client, Credit credit, Payments payments) {
-        this.client = client;
-        this.credit = credit;
-        this.payments = payments;
-        clientFullName = client.getName()+" "+client.getSurname()+""+client.getPatronymic();
-        creditName=credit.getName();
-    }
-
 
     public String getIdClientCredit() {
         return idClientCredit;
@@ -86,30 +86,6 @@ public class ClientCredit {
         this.creditName = creditName;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client; clientFullName = client.getName()+" "+client.getSurname()+""+client.getSurname();
-    }
-
-    public Credit getCredit() {
-        return credit;
-    }
-
-    public void setCredit(Credit credit) {
-        this.credit = credit; creditName=credit.getName();
-    }
-
-    public Payments getPayments() {
-        return payments;
-    }
-
-    public void setPayments(Payments payments) {
-        this.payments = payments;
-    }
-
     public long getCreditSum() {
         return creditSum;
     }
@@ -118,11 +94,11 @@ public class ClientCredit {
         this.creditSum = creditSum;
     }
 
-    public String getPercent() {
+    public float getPercent() {
         return percent;
     }
 
-    public void setPercent(String percent) {
+    public void setPercent(float percent) {
         this.percent = percent;
     }
 
@@ -134,6 +110,44 @@ public class ClientCredit {
         this.time = time;
     }
 
+    public Payments getPayments() {
+        return payments;
+    }
+
+    public void setPayments(Payments payments) {
+        this.payments = payments;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        if(client!=null)
+        this.clientFullName = client.getFIO();
+        else this.clientFullName = null;
+        this.client = client;
+    }
+
+    public Credit getCredit() {
+        return credit;
+    }
+
+    public void setCredit(Credit credit) {
+        if(credit!=null){
+        this.creditName = credit.getName();
+        this.percent = credit.getPercent();}
+        else this.creditName = null;
+        this.credit = credit;
+
+    }
+    public LocalDate getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDate date) {
+        this.start = date;
+    }
     @Override
     public String toString() {
         return "ClientCredit{" +
@@ -142,10 +156,12 @@ public class ClientCredit {
                 ", creditName='" + creditName + '\'' +
                 ", creditSum=" + creditSum +
                 ", percent='" + percent + '\'' +
-                ", time='" + time + '\'' +
+                ", time=" + time +
+                ", payments=" + payments +
                 ", client=" + client +
                 ", credit=" + credit +
-                ", payments=" + payments +
                 '}';
     }
+
+
 }

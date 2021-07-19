@@ -2,19 +2,14 @@ package com.haulmont.testtask.dao;
 
 import com.haulmont.testtask.entities.Client;
 import com.haulmont.testtask.entities.ClientCredit;
-import com.haulmont.testtask.entities.Credit;
 import com.haulmont.testtask.hibernate.HibernateUtil;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientCreditDB implements ClientCreditDAO{
+public class ClientCreditDB implements ClientCreditDAO {
     @Override
     public void addClientCredit(ClientCredit clientCredit) throws SQLException {
         Session session = null;
@@ -72,14 +67,18 @@ public class ClientCreditDB implements ClientCreditDAO{
             clientCredits = session.createQuery("SELECT clientCredit FROM ClientCredit clientCredit").list();
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
         return clientCredits;
     }
 
     @Override
     public void deleteClientCredit(ClientCredit clientCredit) throws SQLException {
-        if(clientCredit.getClient()!=null) clientCredit.setClient(null);
-        if(clientCredit.getCredit()!=null) clientCredit.setCredit(null);
+        if (clientCredit.getClient() != null) clientCredit.setClient(null);
+        if (clientCredit.getCredit() != null) clientCredit.setCredit(null);
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -93,7 +92,6 @@ public class ClientCreditDB implements ClientCreditDAO{
             if (session != null && session.isOpen()) session.close();
         }
     }
-
 
 
 }

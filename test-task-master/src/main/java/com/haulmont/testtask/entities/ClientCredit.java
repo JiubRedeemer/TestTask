@@ -151,6 +151,4 @@ public class ClientCredit {
                 ", credit=" + credit +
                 '}';
     }
-
-
 }

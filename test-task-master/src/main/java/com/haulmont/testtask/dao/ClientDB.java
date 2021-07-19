@@ -11,7 +11,6 @@ import java.util.List;
 public class ClientDB implements ClientDAO {
     @Override
     public void addClient(Client client) throws SQLException {
-
         Session session = null;
         try{
             session = HibernateUtil.getSessionFactory().openSession();

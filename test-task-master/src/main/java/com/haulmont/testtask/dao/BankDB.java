@@ -89,9 +89,5 @@ public class BankDB implements BankDAO {
         } finally {
             if (session != null && session.isOpen()) session.close();
         }
-
-
     }
-
-
 }

@@ -155,7 +155,7 @@ public class CreditEditUI extends VerticalLayout {
     private void addCredit() throws SQLException {
         Credit credit = new Credit(tfName.getValue(),
                 Long.parseLong(tfLimit.getValue()),
-                (Float.parseFloat(tfPercent.getValue())) / 100);
+                (float)((Math.round(Float.parseFloat(tfPercent.getValue()) * 10d) / 10d) / 100));
         credit.setBank(bank);
         bank.getCredits().add(credit);
         creditDB.addCredit(credit);
@@ -172,7 +172,7 @@ public class CreditEditUI extends VerticalLayout {
 
         credit.setName(tfName.getValue());
         credit.setLimit(Long.parseLong(tfLimit.getValue()));
-        credit.setPercent(Float.parseFloat(tfPercent.getValue()) / 100);
+        credit.setPercent((float)((Math.round(Float.parseFloat(tfPercent.getValue()) * 10d) / 10d) / 100));
 
         creditDB.updateCredit(credit);
         Page.getCurrent().reload();

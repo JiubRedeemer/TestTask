@@ -89,6 +89,5 @@ public class CreditDB implements CreditDAO{
         } finally {
             if (session != null && session.isOpen()) session.close();
         }
-
     }
 }

@@ -130,11 +130,6 @@ public class Client {
     }
 
     public void setClientCredits(List<ClientCredit> clientCredits) {
-        for (ClientCredit clientCredit:
-             clientCredits) {
-            clientCredit.setClientFullName(FIO);
-            clientCredit.setClient(this);
-        }
         this.clientCredits = clientCredits;
     }
 

@@ -1,15 +1,12 @@
 package com.haulmont.testtask.entities;
 
-import com.sun.istack.Nullable;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "BANK")

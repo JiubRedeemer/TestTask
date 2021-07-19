@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CreditView extends VerticalLayout {
     private Grid<Credit> grid = new Grid<>(Credit.class);
-    private Button add = new Button("Add");
+    private Button add = new Button("Добавить");
     private CreditDB creditDB = new CreditDB();
     private CreditEditUI addNew = new CreditEditUI(new Credit(), this);
 

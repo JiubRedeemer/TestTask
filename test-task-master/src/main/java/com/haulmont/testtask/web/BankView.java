@@ -36,7 +36,7 @@ public class BankView extends VerticalLayout {
     }
 
     private void gridConfigure() throws SQLException {
-        if(bankDB.getAllBanks().isEmpty()) bankDB.addBank(new Bank("MyBank"));
+        if (bankDB.getAllBanks().isEmpty()) bankDB.addBank(new Bank("MyBank"));
         bank = (Bank) bankDB.getAllBanks().get(0);
         gridClients.setWidth("900");
         gridClients.setCaption("Клиенты");

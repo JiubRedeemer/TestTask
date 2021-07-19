@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CreditDB implements CreditDAO{
     @Override
-    public void addCredit(Credit credit) throws SQLException {
+    public void addCredit(Credit credit) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -26,7 +26,7 @@ public class CreditDB implements CreditDAO{
     }
 
     @Override
-    public void updateCredit(Credit credit) throws SQLException {
+    public void updateCredit(Credit credit) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -42,7 +42,7 @@ public class CreditDB implements CreditDAO{
     }
 
     @Override
-    public Credit getCreditById(String id) throws SQLException {
+    public Credit getCreditById(String id) {
         Session session = null;
         Credit credit = null;
         try {
@@ -59,7 +59,7 @@ public class CreditDB implements CreditDAO{
     }
 
     @Override
-    public List getAllCredits() throws SQLException {
+    public List getAllCredits() {
         Session session = null;
         List credits = new ArrayList<Client>();
         try {

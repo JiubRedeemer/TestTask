@@ -31,15 +31,6 @@ public class ClientCredit {
     @Column(name = "start")
     private LocalDate start;
 
-//   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//   @JoinColumn(name = "idClient")
-//   private Client client;
-//
-//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "idCredit")
-//    private Credit credit;
-
-
     @ManyToOne()
     @JoinColumn(name = "idСlient")
     private Client client;

@@ -4,13 +4,12 @@ import com.haulmont.testtask.entities.Client;
 import com.haulmont.testtask.hibernate.HibernateUtil;
 import org.hibernate.Session;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClientDB implements ClientDAO {
     @Override
-    public void addClient(Client client) throws SQLException {
+    public void addClient(Client client) {
         Session session = null;
         try{
             session = HibernateUtil.getSessionFactory().openSession();
@@ -27,7 +26,7 @@ public class ClientDB implements ClientDAO {
     }
 
     @Override
-    public void updateClient(Client client) throws SQLException {
+    public void updateClient(Client client) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -43,7 +42,7 @@ public class ClientDB implements ClientDAO {
     }
 
     @Override
-    public Client getClientById(String id) throws SQLException {
+    public Client getClientById(String id) {
         Session session = null;
         Client client = null;
         try {
@@ -60,7 +59,7 @@ public class ClientDB implements ClientDAO {
     }
 
     @Override
-    public List getAllClients() throws SQLException {
+    public List getAllClients() {
         Session session = null;
         List clients = new ArrayList<Client>();
         try {
@@ -77,7 +76,7 @@ public class ClientDB implements ClientDAO {
     }
 
     @Override
-    public void deleteClient(Client client) throws SQLException {
+    public void deleteClient(Client client) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();

@@ -181,7 +181,6 @@ public class ClientEditUI extends VerticalLayout {
                 tfEmail.getValue(),
                 tfPassport.getValue());
         client.setBank(bank);
-      //  bank.getClients().add(client);
         clientDB.addClient(client);
 
 

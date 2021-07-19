@@ -2,8 +2,6 @@ package com.haulmont.testtask.dao;
 
 
 import com.haulmont.testtask.entities.Bank;
-import com.haulmont.testtask.entities.Client;
-import com.haulmont.testtask.entities.Credit;
 
 import java.sql.SQLException;
 import java.util.List;

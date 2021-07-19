@@ -5,13 +5,13 @@ import com.haulmont.testtask.entities.ClientCredit;
 import com.haulmont.testtask.hibernate.HibernateUtil;
 import org.hibernate.Session;
 
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClientCreditDB implements ClientCreditDAO {
     @Override
-    public void addClientCredit(ClientCredit clientCredit) throws SQLException {
+    public void addClientCredit(ClientCredit clientCredit) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -26,7 +26,7 @@ public class ClientCreditDB implements ClientCreditDAO {
     }
 
     @Override
-    public void updateClientCredit(ClientCredit clientCredit) throws SQLException {
+    public void updateClientCredit(ClientCredit clientCredit) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -42,7 +42,7 @@ public class ClientCreditDB implements ClientCreditDAO {
     }
 
     @Override
-    public ClientCredit getClientCreditById(String id) throws SQLException {
+    public ClientCredit getClientCreditById(String id) {
         Session session = null;
         ClientCredit clientCredit = null;
         try {
@@ -59,7 +59,7 @@ public class ClientCreditDB implements ClientCreditDAO {
     }
 
     @Override
-    public List getAllClientCredit() throws SQLException {
+    public List getAllClientCredit() {
         Session session = null;
         List clientCredits = new ArrayList<Client>();
         try {
@@ -76,7 +76,7 @@ public class ClientCreditDB implements ClientCreditDAO {
     }
 
     @Override
-    public void deleteClientCredit(ClientCredit clientCredit) throws SQLException {
+    public void deleteClientCredit(ClientCredit clientCredit) {
         if (clientCredit.getClient() != null) clientCredit.setClient(null);
         if (clientCredit.getCredit() != null) clientCredit.setCredit(null);
         Session session = null;

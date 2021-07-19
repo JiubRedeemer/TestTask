@@ -2,8 +2,6 @@ package com.haulmont.testtask.web;
 
 import com.haulmont.testtask.MainUI;
 import com.haulmont.testtask.dao.ClientCreditDB;
-import com.haulmont.testtask.dao.ClientDB;
-import com.haulmont.testtask.entities.Client;
 import com.haulmont.testtask.entities.ClientCredit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;

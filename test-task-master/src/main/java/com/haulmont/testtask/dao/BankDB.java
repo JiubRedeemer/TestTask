@@ -11,7 +11,7 @@ import java.util.List;
 public class BankDB implements BankDAO {
 
     @Override
-    public void addBank(Bank bank) throws SQLException {
+    public void addBank(Bank bank) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -26,7 +26,7 @@ public class BankDB implements BankDAO {
     }
 
     @Override
-    public void updateBank(Bank bank) throws SQLException {
+    public void updateBank(Bank bank) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -42,7 +42,7 @@ public class BankDB implements BankDAO {
     }
 
     @Override
-    public Bank getBankById(String id) throws SQLException {
+    public Bank getBankById(String id) {
         Session session = null;
         Bank bank = null;
         try {
@@ -76,7 +76,7 @@ public class BankDB implements BankDAO {
     }
 
     @Override
-    public void deleteBank(Bank bank) throws SQLException {
+    public void deleteBank(Bank bank) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();

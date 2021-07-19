@@ -1,11 +1,8 @@
 package com.haulmont.testtask.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+
 
 @Entity
 public class Payments {
@@ -83,8 +80,6 @@ public class Payments {
     public void setBalanceOwed(long balanceOwed) {
         this.balanceOwed = balanceOwed;
     }
-
-
 
     @Override
     public String toString() {

@@ -19,7 +19,6 @@ public class Bank {
     @Column(name = "name")
     private String name;
 
-
     @OneToMany()
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "idBankClient")

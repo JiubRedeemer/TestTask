@@ -44,11 +44,7 @@ public class MainUI extends UI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-
-
         setContent(layout);
-
     }
 
     public void editPaymentTabName(String newName){

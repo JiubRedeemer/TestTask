@@ -46,7 +46,7 @@ public class BankView extends VerticalLayout {
         gridClients.getColumn("patronymic").setCaption("Отчество");
         gridClients.getColumn("phone").setCaption("Телефон");
         gridClients.getColumn("email").setCaption("Электронная почта");
-        gridClients.getColumn("passport").setCaption("Серия и номер пасспорта");
+        gridClients.getColumn("passport").setCaption("Серия и номер паспорта");
 
         gridCredits.setCaption("Кредиты");
         gridCredits.setWidth("900");

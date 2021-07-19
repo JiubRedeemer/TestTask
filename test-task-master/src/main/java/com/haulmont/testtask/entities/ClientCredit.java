@@ -3,14 +3,13 @@ package com.haulmont.testtask.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
 public class ClientCredit {
     @Id
     @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name ="uuid", strategy = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "idClientCredit")
     private String idClientCredit;
 
@@ -39,10 +38,6 @@ public class ClientCredit {
 //    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "idCredit")
 //    private Credit credit;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_payments")
-    private Payments payments;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -110,21 +105,14 @@ public class ClientCredit {
         this.time = time;
     }
 
-    public Payments getPayments() {
-        return payments;
-    }
-
-    public void setPayments(Payments payments) {
-        this.payments = payments;
-    }
 
     public Client getClient() {
         return client;
     }
 
     public void setClient(Client client) {
-        if(client!=null)
-        this.clientFullName = client.getFIO();
+        if (client != null)
+            this.clientFullName = client.getFIO();
         else this.clientFullName = null;
         this.client = client;
     }
@@ -134,13 +122,14 @@ public class ClientCredit {
     }
 
     public void setCredit(Credit credit) {
-        if(credit!=null){
-        this.creditName = credit.getName();
-        this.percent = credit.getPercent();}
-        else this.creditName = null;
+        if (credit != null) {
+            this.creditName = credit.getName();
+            this.percent = credit.getPercent();
+        } else this.creditName = null;
         this.credit = credit;
 
     }
+
     public LocalDate getStart() {
         return start;
     }
@@ -148,6 +137,7 @@ public class ClientCredit {
     public void setStart(LocalDate date) {
         this.start = date;
     }
+
     @Override
     public String toString() {
         return "ClientCredit{" +
@@ -157,7 +147,6 @@ public class ClientCredit {
                 ", creditSum=" + creditSum +
                 ", percent='" + percent + '\'' +
                 ", time=" + time +
-                ", payments=" + payments +
                 ", client=" + client +
                 ", credit=" + credit +
                 '}';

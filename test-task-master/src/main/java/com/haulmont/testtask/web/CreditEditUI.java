@@ -1,8 +1,11 @@
 package com.haulmont.testtask.web;
 
+import com.haulmont.testtask.dao.BankDB;
 import com.haulmont.testtask.dao.ClientCreditDB;
 import com.haulmont.testtask.dao.CreditDB;
+import com.haulmont.testtask.entities.Bank;
 import com.haulmont.testtask.entities.Credit;
+import com.vaadin.server.Page;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,18 +20,26 @@ public class CreditEditUI extends VerticalLayout {
 
     private CreditDB creditDB = new CreditDB();
     private ClientCreditDB clientCreditDB = new ClientCreditDB();
-    private TextField tfName = new TextField("Name");
-    private TextField tfLimit = new TextField("Limit");
-    private TextField tfPercent = new TextField("Percent");
+    private TextField tfName = new TextField("Название");
+    private TextField tfLimit = new TextField("Лимит");
+    private TextField tfPercent = new TextField("Процентная ставка");
 
 
-    private Button add = new Button("Add");
-    private Button delete = new Button("Delete");
-    private Button update = new Button("Update");
-    private Button cancel = new Button("Cancel");
+    private Button add = new Button("Добавить");
+    private Button delete = new Button("Удалить");
+    private Button update = new Button("Обновить");
+    private Button cancel = new Button("Отмена");
     private Credit credit;
 
+    private Bank bank;
+    private BankDB bankDB = new BankDB();
+
     public CreditEditUI(Credit credit, CreditView creditView) {
+        try {
+            this.bank = (Bank) bankDB.getAllBanks().get(0);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         this.credit = credit;
         setVisible(false);
         setWidthUndefined();
@@ -53,9 +64,9 @@ public class CreditEditUI extends VerticalLayout {
             delete.setVisible(true);
             update.setVisible(true);
         }
-        tfName.setPlaceholder("Enter name");
-        tfLimit.setPlaceholder("Enter limit");
-        tfPercent.setPlaceholder("Enter percent");
+        tfName.setPlaceholder("Введите название");
+        tfLimit.setPlaceholder("Введите лимит");
+        tfPercent.setPlaceholder("Введите процентную ставку");
 
     }
 
@@ -98,7 +109,8 @@ public class CreditEditUI extends VerticalLayout {
                     creditView.updateGrid();
                     this.setVisible(false);
                     clear();
-                } else delete.setComponentError(new UserError("Credit has clients"));
+
+                } else delete.setComponentError(new UserError("Данный кредит используется"));
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -144,16 +156,27 @@ public class CreditEditUI extends VerticalLayout {
         Credit credit = new Credit(tfName.getValue(),
                 Long.parseLong(tfLimit.getValue()),
                 (Float.parseFloat(tfPercent.getValue())) / 100);
-
+        credit.setBank(bank);
+        bank.getCredits().add(credit);
         creditDB.addCredit(credit);
+
     }
 
     private void updateCredit(Credit credit) throws SQLException {
+        bank.getCredits().remove(credit);
+        bankDB.updateBank(credit.getBank());
+
+        credit.setBank(bank);
+        bank.getCredits().add(credit);
+        bankDB.updateBank(credit.getBank());
+
         credit.setName(tfName.getValue());
         credit.setLimit(Long.parseLong(tfLimit.getValue()));
         credit.setPercent(Float.parseFloat(tfPercent.getValue()) / 100);
 
         creditDB.updateCredit(credit);
+        Page.getCurrent().reload();
+
     }
 }
 

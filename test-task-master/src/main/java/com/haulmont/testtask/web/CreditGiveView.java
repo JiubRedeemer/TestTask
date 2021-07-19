@@ -1,5 +1,6 @@
 package com.haulmont.testtask.web;
 
+import com.haulmont.testtask.MainUI;
 import com.haulmont.testtask.dao.ClientCreditDB;
 import com.haulmont.testtask.dao.ClientDB;
 import com.haulmont.testtask.entities.Client;
@@ -14,11 +15,12 @@ import java.util.List;
 
 public class CreditGiveView extends VerticalLayout {
     private Grid<ClientCredit> grid = new Grid<>(ClientCredit.class);
-    private Button add = new Button("Add");
+    private Button add = new Button("Добавить");
     private ClientCreditDB clientCreditDB = new ClientCreditDB();
     private CreditGiveEditUI addNew = new CreditGiveEditUI(new ClientCredit(), this);
 
-    public CreditGiveView(PaymentsView paymentsView) throws SQLException{
+    public CreditGiveView(PaymentsView paymentsView, MainUI mainUI) throws SQLException{
+
         setSizeFull();
         gridConfigure();
         HorizontalLayout layout = new HorizontalLayout();
@@ -27,7 +29,8 @@ public class CreditGiveView extends VerticalLayout {
         gridLayout.addComponents(grid, addNew);
         gridLayout.setExpandRatio(grid, 1);
         layout.addComponents(add);
-        addNew.paymentsView = paymentsView;
+        addNew.setPaymentsView(paymentsView);
+        addNew.setMainUI(mainUI);
         add.addClickListener(clickEvent -> {addNew.setVisible(true); addNew.editConfigure(null);});
         updateList();
         addComponents(layout, gridLayout);

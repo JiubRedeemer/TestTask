@@ -1,6 +1,5 @@
 package com.haulmont.testtask.web;
 
-import com.haulmont.testtask.dao.PaymentsDB;
 import com.haulmont.testtask.entities.ClientCredit;
 import com.haulmont.testtask.entities.Payments;
 import com.vaadin.ui.*;
@@ -11,9 +10,7 @@ import java.util.List;
 
 public class PaymentsView extends VerticalLayout {
     public Grid<Payments> grid = new Grid<>(Payments.class);
-    private PaymentsDB paymentsDB = new PaymentsDB();
     RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
-    Button refresh = new Button("Refresh");
     public ClientCredit clientCredit;
 
     private List<Payments> paymentsListDiff = new ArrayList<>();
@@ -27,12 +24,12 @@ public class PaymentsView extends VerticalLayout {
         gridLayout.setSizeFull();
         gridLayout.addComponents(grid);
         gridLayout.setExpandRatio(grid, 1);
-        radioGroup.setItems("Differentiated payment", "Annuity payment");
-        radioGroup.setValue("Differentiated payment");
-        layout.addComponents(radioGroup, refresh);
+        radioGroup.setItems("Дифференцированный платеж", "Аннуитетный платеж");
+        radioGroup.setValue("Дифференцированный платеж");
+        layout.addComponents(radioGroup);
         radioGroup.addValueChangeListener(event -> {
-            if(event.getValue() == "Differentiated payment") grid.setItems(paymentsListDiff);
-            if(event.getValue() == "Annuity payment") grid.setItems(paymentsListAnn);
+            if(event.getValue() == "Дифференцированный платеж") grid.setItems(paymentsListDiff);
+            if(event.getValue() == "Аннуитетный платеж") grid.setItems(paymentsListAnn);
         });
         updateList();
         addComponents(layout, gridLayout);
@@ -43,15 +40,11 @@ public class PaymentsView extends VerticalLayout {
         grid.setItems(paymentsListDiff);
     }
 
-    public void updateGrid() throws SQLException {
-        grid.setItems(paymentsDB.getAllPayments());
-    }
 
     private void gridConfigure() throws SQLException {
         grid.setWidth("900");
         grid.setColumns("date", "sumPayment", "sumPaymentBody", "sumPaymentPercents", "balanceOwed");
-        List<Payments> payments = paymentsDB.getAllPayments();
-        grid.setItems(payments);
+        grid.setItems(paymentsListDiff);
     }
 
     public List<Payments> getPaymentsListDiff() {

@@ -1,8 +1,13 @@
 package com.haulmont.testtask.entities;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.sun.istack.Nullable;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
@@ -17,12 +22,15 @@ public class Bank {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY,
-    mappedBy = "bank", cascade = CascadeType.ALL)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "idBankClient")
     private List<Client> clients;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "bank", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "idBankCredit")
     private List<Credit> credits;
 
     public Bank() {
@@ -48,6 +56,7 @@ public class Bank {
         this.name = name;
     }
 
+    @Transactional
     public List<Client> getClients() {
         return clients;
     }
@@ -56,6 +65,7 @@ public class Bank {
         this.clients = clients;
     }
 
+    @Transactional
     public List<Credit> getCredits() {
         return credits;
     }

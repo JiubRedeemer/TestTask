@@ -31,8 +31,8 @@ public class Client {
     @Column(name = "passport")
     private String passport;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "idBank")
+    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name = "idBankClient")
     private Bank bank;
 
     @Nullable

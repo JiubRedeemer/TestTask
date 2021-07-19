@@ -24,9 +24,6 @@ public class FillDb {
         Vlad.setBank(tinkoff);
         Dasha.setBank(tinkoff);
 
-//        Payments paymentsV = new Payments(new L(System.currentTimeMillis()), 5000, 1200, 3000, 800);
-//        Payments paymentsD = new Payments(new Date(System.currentTimeMillis()), 6000, 2200, 3000, 800);
-
         ClientCredit clientCreditV = new ClientCredit(9200,3);
         ClientCredit clientCreditD = new ClientCredit(123456,12);
 
@@ -37,16 +34,9 @@ public class FillDb {
         clientCreditV.setStart(LocalDate.now());
         clientCreditD.setStart(LocalDate.now());
 
-//        clientCreditV.setPayments(paymentsV);
-//        clientCreditD.setPayments(paymentsD);
-
-//        paymentsV.setClientCredit(clientCreditV);
-//        paymentsD.setClientCredit(clientCreditD);
-
         ClientDB clientDB = new ClientDB();
         CreditDB creditDB = new CreditDB();
         BankDB bankDB = new BankDB();
-        PaymentsDB paymentsDB = new PaymentsDB();
         ClientCreditDB clientCreditDB = new ClientCreditDB();
         try {
             bankDB.addBank(tinkoff);

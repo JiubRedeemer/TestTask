@@ -24,10 +24,6 @@ public class Payments {
     @Column(name = "balanceOwed")
     private long balanceOwed;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_Payments")
-    private List<ClientCredit> clientCredits;
-
     public Payments() {
     }
 
@@ -88,13 +84,7 @@ public class Payments {
         this.balanceOwed = balanceOwed;
     }
 
-    public List<ClientCredit> getClientCredits() {
-        return clientCredits;
-    }
 
-    public void setClientCredits(List<ClientCredit> clientCredits) {
-        this.clientCredits = clientCredits;
-    }
 
     @Override
     public String toString() {
@@ -105,7 +95,6 @@ public class Payments {
                 ", sumPaymentBody=" + sumPaymentBody +
                 ", sumPaymentPercents=" + sumPaymentPercents +
                 ", balanceOwed=" + balanceOwed +
-                ", clientCredits=" + clientCredits +
                 '}';
     }
 }

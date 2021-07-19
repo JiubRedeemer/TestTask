@@ -13,7 +13,6 @@ public class HibernateUtil {
                     addAnnotatedClass(Client.class).
                     addAnnotatedClass(Credit.class).
                     addAnnotatedClass(Bank.class).
-                    addAnnotatedClass(Payments.class).
                     addAnnotatedClass(ClientCredit.class).
                     buildSessionFactory();
         } catch (Throwable ex){

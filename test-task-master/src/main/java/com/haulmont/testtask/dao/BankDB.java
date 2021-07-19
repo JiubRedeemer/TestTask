@@ -68,6 +68,10 @@ public class BankDB implements BankDAO{
             banks = session.createQuery("SELECT bank FROM Bank bank").list();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
         return banks;
     }

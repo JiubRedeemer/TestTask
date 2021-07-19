@@ -39,9 +39,21 @@ public class BankView extends VerticalLayout {
         if(bankDB.getAllBanks().isEmpty()) bankDB.addBank(new Bank("MyBank"));
         bank = (Bank) bankDB.getAllBanks().get(0);
         gridClients.setWidth("900");
+        gridClients.setCaption("Клиенты");
         gridClients.setColumns("name", "surname", "patronymic", "phone", "email", "passport");
+        gridClients.getColumn("name").setCaption("Имя");
+        gridClients.getColumn("surname").setCaption("Фамилия");
+        gridClients.getColumn("patronymic").setCaption("Отчество");
+        gridClients.getColumn("phone").setCaption("Телефон");
+        gridClients.getColumn("email").setCaption("Электронная почта");
+        gridClients.getColumn("passport").setCaption("Серия и номер пасспорта");
+
+        gridCredits.setCaption("Кредиты");
         gridCredits.setWidth("900");
         gridCredits.setColumns("name", "limit", "percent");
+        gridCredits.getColumn("name").setCaption("Название");
+        gridCredits.getColumn("limit").setCaption("Лимит");
+        gridCredits.getColumn("percent").setCaption("Процентная ставка");
         List<Client> clients = bank.getClients();
         List<Credit> credits = bank.getCredits();
         if (clients != null)

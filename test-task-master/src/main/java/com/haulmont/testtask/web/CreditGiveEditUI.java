@@ -1,13 +1,11 @@
 package com.haulmont.testtask.web;
 
 import com.haulmont.testtask.MainUI;
+import com.haulmont.testtask.dao.BankDB;
 import com.haulmont.testtask.dao.ClientCreditDB;
 import com.haulmont.testtask.dao.ClientDB;
 import com.haulmont.testtask.dao.CreditDB;
-import com.haulmont.testtask.entities.Client;
-import com.haulmont.testtask.entities.ClientCredit;
-import com.haulmont.testtask.entities.Credit;
-import com.haulmont.testtask.entities.Payments;
+import com.haulmont.testtask.entities.*;
 import com.vaadin.server.Page;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.*;
@@ -28,7 +26,7 @@ public class CreditGiveEditUI extends VerticalLayout {
     private Button add = new Button("Добавить");
     private Button cancel = new Button("Отмена");
     private Button delete = new Button("Удалить");
-    private Button update = new Button("Изменить");
+    private Button update = new Button("Обновить");
     private Button calculate = new Button("Составить график платежей");
     private Label paymentSumDiff = new Label();
     private Label overpayDiff = new Label();
@@ -45,8 +43,11 @@ public class CreditGiveEditUI extends VerticalLayout {
     private CreditDB creditDB = new CreditDB();
     private List<Payments> paymentsListDiff = new ArrayList<>();
     private List<Payments> paymentsListAnn = new ArrayList<>();
-
+    BankDB bankDB = new BankDB();
+    Bank bank = new Bank();
     public CreditGiveEditUI(ClientCredit clientCredit, CreditGiveView creditGiveView) throws SQLException {
+
+        bank = (Bank) bankDB.getAllBanks().get(0);
         this.clientCredit = clientCredit;
         this.creditGiveView = creditGiveView;
         setVisible(false);
@@ -185,32 +186,35 @@ public class CreditGiveEditUI extends VerticalLayout {
 
         clientCredit.getClient().getClientCredits().remove(clientCredit);
         clientCredit.getCredit().getClientCredits().remove(clientCredit);
-        clientDB.updateClient(clientCredit.getClient());
-        creditDB.updateCredit(clientCredit.getCredit());
 
         clientCredit.setClient(clientComboBox.getValue());
         clientCredit.setCredit(creditComboBox.getValue());
         clientCredit.getClient().getClientCredits().add(clientCredit);
         clientCredit.getCredit().getClientCredits().add(clientCredit);
-        clientDB.updateClient(clientCredit.getClient());
-        creditDB.updateCredit(clientCredit.getCredit());
+
 
 
         clientCredit.setCreditSum(Long.parseLong(tfCreditSum.getValue()));
         clientCredit.setTime(Long.parseLong(tfTimeOfCredit.getValue()));
         clientCredit.setStart(dateField.getValue());
         clientCreditDB.updateClientCredit(clientCredit);
+
+
         Page.getCurrent().reload();
     }
 
     private void deleteClientCredit(ClientCredit clientCredit) throws SQLException {
+        bank.getClients().remove(clientCredit.getClient());
+
         clientCredit.getClient().getClientCredits().remove(clientCredit);
         clientCredit.getCredit().getClientCredits().remove(clientCredit);
 
-        clientDB.updateClient(clientCredit.getClient());
-        creditDB.updateCredit(clientCredit.getCredit());
+
+        bank.getClients().add(clientCredit.getClient());
+        bankDB.updateBank(bank);
         clientCreditDB.deleteClientCredit(clientCredit);
         creditGiveView.updateGrid();
+
         this.setVisible(false);
         clear();
         Page.getCurrent().reload();
@@ -242,9 +246,11 @@ public class CreditGiveEditUI extends VerticalLayout {
     }
 
     private void updateSelects() throws SQLException {
-        clientComboBox.setItems(clientDB.getAllClients());
+        List<Client> clients = bank.getClients();
+        List<Credit> credits = bank.getCredits();
+        clientComboBox.setItems(clients);
         clientComboBox.setItemCaptionGenerator(Client::getFIO);
-        creditComboBox.setItems(creditDB.getAllCredits());
+        creditComboBox.setItems(credits);
         creditComboBox.setItemCaptionGenerator(Credit::getName);
     }
 

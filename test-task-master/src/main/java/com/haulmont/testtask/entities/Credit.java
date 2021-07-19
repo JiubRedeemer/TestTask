@@ -22,11 +22,11 @@ public class Credit {
     @Column(name = "percent")
     private float percent;
 
-    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "idBankCredit")
     private Bank bank;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval=true)
     @JoinColumn(name = "idCredit")
     private List<ClientCredit> clientCredits;
 

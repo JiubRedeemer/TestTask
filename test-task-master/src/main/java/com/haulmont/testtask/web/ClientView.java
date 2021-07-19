@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ClientView extends VerticalLayout {
     private Grid<Client> grid = new Grid<>(Client.class);
-    private Button add = new Button("Add");
+    private Button add = new Button("Добавить");
     private ClientDB clientDB = new ClientDB();
     private ClientEditUI addNew = new ClientEditUI(new Client(), this);
 
@@ -39,6 +39,12 @@ public class ClientView extends VerticalLayout {
     private void gridConfigure() throws SQLException {
         grid.setWidth("900");
         grid.setColumns("name", "surname", "patronymic", "phone", "email", "passport");
+        grid.getColumn("name").setCaption("Имя");
+        grid.getColumn("surname").setCaption("Фамилия");
+        grid.getColumn("patronymic").setCaption("Отчество");
+        grid.getColumn("phone").setCaption("Номер телефона");
+        grid.getColumn("email").setCaption("E-mail");
+        grid.getColumn("passport").setCaption("Серия и номер паспорта");
         List<Client> clients = clientDB.getAllClients();
         grid.setItems(clients);
         grid.asSingleSelect().addSingleSelectionListener(event -> addNew.editConfigure(event.getValue()));

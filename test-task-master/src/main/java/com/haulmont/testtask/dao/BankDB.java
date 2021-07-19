@@ -1,8 +1,6 @@
 package com.haulmont.testtask.dao;
 
 import com.haulmont.testtask.entities.Bank;
-import com.haulmont.testtask.entities.Client;
-import com.haulmont.testtask.entities.Credit;
 import com.haulmont.testtask.hibernate.HibernateUtil;
 import org.hibernate.Session;
 
@@ -10,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BankDB implements BankDAO{
+public class BankDB implements BankDAO {
 
     @Override
     public void addBank(Bank bank) throws SQLException {
@@ -49,7 +47,7 @@ public class BankDB implements BankDAO{
         Bank bank = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            bank = (Bank) session.load(Bank.class, id);
+            bank = session.load(Bank.class, id);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -57,7 +55,8 @@ public class BankDB implements BankDAO{
                 session.close();
             }
         }
-        return bank;}
+        return bank;
+    }
 
     @Override
     public List getAllBanks() throws SQLException {
@@ -68,7 +67,7 @@ public class BankDB implements BankDAO{
             banks = session.createQuery("SELECT bank FROM Bank bank").list();
         } catch (Exception ex) {
             ex.printStackTrace();
-        }finally {
+        } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }
@@ -91,7 +90,7 @@ public class BankDB implements BankDAO{
             if (session != null && session.isOpen()) session.close();
         }
 
-    
+
     }
 
 

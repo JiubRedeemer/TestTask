@@ -116,13 +116,10 @@ public class ClientEditUI extends VerticalLayout {
 
         delete.addClickListener(event -> {
             try {
-
-                if (client.getClientCredits().isEmpty()) {
-                    clientDB.deleteClient(client);
-                    clientView.updateGrid();
-                    this.setVisible(false);
-                    clear();
-                } else delete.setComponentError(new UserError("У клиента есть незакрытые кредиты"));
+                deleteClient(client);
+                clientView.updateGrid();
+                this.setVisible(false);
+                clear();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -170,6 +167,12 @@ public class ClientEditUI extends VerticalLayout {
         tfPassport.setValue(client.getPassport());
     }
 
+    private void deleteClient(Client client) throws SQLException{
+        if (client.getClientCredits().isEmpty()) {
+            clientDB.deleteClient(client);
+        } else delete.setComponentError(new UserError("У клиента есть незакрытые кредиты"));
+    }
+
     private void addClient() throws SQLException {
         Client client = new Client(tfName.getValue(),
                 tfSurname.getValue(),
@@ -178,19 +181,13 @@ public class ClientEditUI extends VerticalLayout {
                 tfEmail.getValue(),
                 tfPassport.getValue());
         client.setBank(bank);
-        bank.getClients().add(client);
+      //  bank.getClients().add(client);
         clientDB.addClient(client);
 
 
     }
 
     private void updateClient(Client client) throws SQLException {
-        bank.getClients().remove(client);
-        bankDB.updateBank(client.getBank());
-
-        client.setBank(bank);
-        bank.getClients().add(client);
-        bankDB.updateBank(client.getBank());
 
         client.setName(tfName.getValue());
         client.setSurname(tfSurname.getValue());

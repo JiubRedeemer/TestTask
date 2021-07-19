@@ -41,6 +41,9 @@ public class CreditView extends VerticalLayout {
     private void gridConfigure() throws SQLException {
         grid.setWidth("900");
         grid.setColumns("name", "limit", "percent");
+        grid.getColumn("name").setCaption("Название кредита");
+        grid.getColumn("limit").setCaption("Лимит");
+        grid.getColumn("percent").setCaption("Процентная ставка");
         List<Credit> credits = creditDB.getAllCredits();
         grid.setItems(credits);
         grid.asSingleSelect().addSingleSelectionListener(event -> addNew.editConfigure(event.getValue()));

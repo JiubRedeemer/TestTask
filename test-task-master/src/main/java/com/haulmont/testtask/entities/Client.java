@@ -31,12 +31,12 @@ public class Client {
     @Column(name = "passport")
     private String passport;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "idBankClient")
     private Bank bank;
 
     @Nullable
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "idClient")
     private List<ClientCredit> clientCredits;
 

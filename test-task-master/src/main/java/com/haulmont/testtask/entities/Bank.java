@@ -23,12 +23,12 @@ public class Bank {
     private String name;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany()
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "idBankClient")
     private List<Client> clients;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany()
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "idBankCredit")
     private List<Credit> credits;

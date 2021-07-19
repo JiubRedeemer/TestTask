@@ -48,6 +48,10 @@ public class CreditGiveView extends VerticalLayout {
     private void gridConfigure() throws SQLException {
         grid.setWidth("900");
         grid.setColumns("clientFullName", "creditName", "creditSum", "time");
+        grid.getColumn("clientFullName").setCaption("ФИО");
+        grid.getColumn("creditName").setCaption("Название кредита");
+        grid.getColumn("creditSum").setCaption("Сумма кредита");
+        grid.getColumn("time").setCaption("Время выплат");
         List<ClientCredit> clientCredits = clientCreditDB.getAllClientCredit();
         grid.setItems(clientCredits);
         grid.asSingleSelect().addSingleSelectionListener(event -> addNew.editConfigure(event.getValue()));

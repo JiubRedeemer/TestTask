@@ -40,12 +40,12 @@ public class ClientCredit {
 //    private Credit credit;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "idСlient")
     private Client client;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "idCredit")
     private Credit credit;
 

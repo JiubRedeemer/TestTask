@@ -26,19 +26,23 @@ public class MainUI extends UI {
         layout.setMargin(true);
         setContent(layout);
         TabSheet tabSheet = new TabSheet();
-        TabSheet editTabSheet = new TabSheet();
+        TabSheet bankTabSheet = new TabSheet();
+
 
 
         try {
-
             PaymentsView paymentsView = new PaymentsView();
             BankView bankView = new BankView();
-            editTabSheet.addTab(new ClientView(), "Клиенты");
-            editTabSheet.addTab(new CreditView(), "Кредиты");
+
             layout.addComponent(tabSheet);
+
             tabSheet.addTab(creditsTabSheet, "Выдача кредитов");
-            tabSheet.addTab(editTabSheet, "Изменение данных");
-            tabSheet.addTab(bankView, "Банк");
+            tabSheet.addTab(bankTabSheet, "Банк");
+
+            bankTabSheet.addTab(bankView, "База данных банка");
+            bankTabSheet.addTab(new ClientView(), "Клиенты");
+            bankTabSheet.addTab(new CreditView(), "Кредиты");
+
             creditsTabSheet.addTab(new CreditGiveView(paymentsView, this), "Выданные кредиты");
             creditsTabSheet.addTab(paymentsView, "График выплат");
             creditsTabSheet.getTab(1).setVisible(false);
